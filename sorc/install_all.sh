@@ -14,7 +14,8 @@ CP='cp -rp'
 # install forecast
 #------------------------------------
 $Build_forecast && {
-  ${CP} hafs_forecast.fd/tests/fv3_32bit.exe         ../exec/hafs_forecast.x
+  ${CP} hafs_forecast.fd/tests/fv3_64bit.exe         ../exec/hafs_forecast.x
+  #${CP} hafs_forecast.fd/tests/fv3_32bit.exe         ../exec/hafs_forecast.x
 }
 
 #------------------------------------
