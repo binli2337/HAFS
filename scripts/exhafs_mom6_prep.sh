@@ -58,8 +58,6 @@ cd $DATA
 #./mom6_ic.sh $CDATE
 ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/rtofs_ssh_ic*nc ${OUTDIR}
 ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/rtofs_ts_ic*nc ${OUTDIR}
-#mv rtofs_HAT10_$PDY_f$cyc_SSH_ic.nc ${OUTDIR}/rtofs_ssh_ic.nc
-#mv rtofs_HAT10_$PDY_f$cyc_TS_ic.nc ${OUTDIR}/rtofs_tc_ic.nc
 #
 #mom6 lbc
 #${USHhafs}/mom6_lbc.sh $CDATE

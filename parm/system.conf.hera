@@ -6,6 +6,7 @@ disk_project=hwrf
 tape_project=emc-hwrf
 ## CPU account name for submitting jobs to the batch system.
 cpu_account=hurricane
+#cpu_account=marine-cpu
 ## Archive path
 archive=hpss:/NCEPDEV/{tape_project}/5year/{ENV[USER]}/{SUBEXPT}/{out_prefix}.tar
 ## Specify input sources for HISTORY mode.
@@ -36,6 +37,7 @@ COMINgfs={COMgfs}
 COMINhafs={COMINgfs}
 #COMINhafs=/scratch1/NCEPDEV/hwrf/noscrub/hafs-input/COMGFSv16
 COMrtofs=/scratch1/NCEPDEV/hwrf/noscrub/hafs-input/COMRTOFSv2
+COMmom6=/scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc
 COMINrtofs={COMrtofs}
 ## A-Deck directory for graphics
 ADECKhafs=/scratch1/NCEPDEV/hwrf/noscrub/input/abdeck/aid

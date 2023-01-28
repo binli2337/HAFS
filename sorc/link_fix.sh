@@ -13,7 +13,7 @@ if [ ${target} == "wcoss2" ]; then
   FIXROOT=/lfs/h2/emc/hur/noscrub/hafs-fix-files/hafs-${FIXversion}-fix/fix
 elif [ ${target} == "hera" ]; then
   #FIXROOT=/scratch1/NCEPDEV/hwrf/noscrub/hafs-fix-files/hafs-${FIXversion}-fix/fix
-  FIXROOT=/scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-fix-files/hafs-20221116-fix/fix
+  FIXROOT=/scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-fix-files/hafs-20230125-fix/fix
 elif [ ${target} == "orion" ]; then
   FIXROOT=/work/noaa/hwrf/noscrub/hafs-fix-files/hafs-${FIXversion}-fix/fix
 elif [ ${target} == "jet" ]; then

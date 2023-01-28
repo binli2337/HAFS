@@ -874,6 +874,7 @@ if [ ${ocean_model} = mom6 ]; then
   ${NCP} ${PARMforecast}/../regional_mom6/input_nest.nml.tmp .
   ${NCP} ${PARMforecast}/../regional_mom6/model_configure.tmp .
   ${NCP} ${PARMforecast}/../regional_mom6/nems.configure.mom6.tmp ./nems.configure
+  ${NCP} ${PARMforecast}/../regional_mom6/data_table ./data_table
 fi
 #BL
 
@@ -1213,21 +1214,7 @@ if [ ${run_ocean} = yes ] && [ ${ocean_model} = mom6 ];  then
   ${NLN} ${WORKhafs}/intercom/mom6/rtofs_ssh_ic.nc INPUT/rtofs_ssh_ic.nc
   # link fix
   ${NLN} ${FIXmom6}/INPUT/analysis_vgrid_lev51.nc INPUT/analysis_vgrid_lev51.nc 
-  ${NLN} ${FIXmom6}/INPUT/C192_grid.tile7.halo0.nc INPUT/C192_grid.tile7.halo0.nc
-  ${NLN} ${FIXmom6}/INPUT/C192_grid.tile7.halo3.nc INPUT/C192_grid.tile7.halo3.nc
-  ${NLN} ${FIXmom6}/INPUT/C192_grid.tile7.halo4.nc INPUT/C192_grid.tile7.halo4.nc
-  ${NLN} ${FIXmom6}/INPUT/C192_grid.tile7.nc INPUT/C192_grid.tile7.nc
-  ${NLN} ${FIXmom6}/INPUT/C192_mosaic.nc INPUT/C192_mosaic.nc
-  ${NLN} ${FIXmom6}/INPUT/C192_mosaic.nc INPUT/C192_mosaic.nc
-  ${NLN} ${FIXmom6}/INPUT/C192_oro_data.tile7.halo0.nc INPUT/C192_oro_data.tile7.halo0.nc
-  ${NLN} ${FIXmom6}/INPUT/C192_oro_data.tile7.halo3.nc INPUT/C192_oro_data.tile7.halo3.nc
-  ${NLN} ${FIXmom6}/INPUT/C192_oro_data.tile7.halo4.nc INPUT/C192_oro_data.tile7.halo4.nc
   ${NLN} ${FIXmom6}/INPUT/geothermal_davies2013_hat10.nc INPUT/geothermal_davies2013_hat10.nc
-  ${NLN} ${FIXmom6}/INPUT/gfs_ctrl.nc INPUT/gfs_ctrl.nc
-  ${NLN} ${FIXmom6}/INPUT/grid.tile7.halo0.nc INPUT/grid.tile7.halo0.nc
-  ${NLN} ${FIXmom6}/INPUT/grid.tile7.halo4.nc INPUT/grid.tile7.halo4.nc
-  ${NLN} ${FIXmom6}/INPUT/grid_spec.nc INPUT/grid_spec.nc
-  ${NLN} ${FIXmom6}/INPUT/atmos_mosaic.nc INPUT/atmos_mosaic.nc
   ${NLN} ${FIXmom6}/INPUT/land_mosaic.nc INPUT/land_mosaic.nc
   ${NLN} ${FIXmom6}/INPUT/ocean_mosaic.nc INPUT/ocean_mosaic.nc
   ${NLN} ${FIXmom6}/INPUT/mosaic.nc INPUT/mosaic.nc
@@ -1247,7 +1234,7 @@ if [ ${run_ocean} = yes ] && [ ${ocean_model} = mom6 ];  then
   ${NLN} ${FIXmom6}/INPUT/mom6_grid/grid_spec.nc  grid_spec.nc
   ${NLN} ${FIXmom6}/INPUT/mom6_grid/hafs_mom6_mesh.nc  hafs_mom6_mesh.nc
   ${NLN} ${WORKhafs}/intercom/mom6/obc*nc INPUT/
-  ${NCP} ${PARMforecast}/../regional_mom6/data_table .
+#  ${NCP} ${PARMforecast}/../regional_mom6/data_table .
 fi
 # Prepare CDEPS input and fix files if required.
 if [ ${run_atm_datm_ocean} = yes ]; then
@@ -1601,6 +1588,7 @@ ${NCP} -p ${FORECASTEXEC} ./hafs_forecast.x
 set -o pipefail
 ${APRUNC} ./hafs_forecast.x 2>&1 | tee forecast.log
 set +o pipefail
+#exit
 
 if [ $gtype = regional ] && [ ${run_datm} = no ]; then
 

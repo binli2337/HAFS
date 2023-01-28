@@ -4,7 +4,6 @@
 
 # ESMF #
 logKindFlag: ESMF_LOGKIND_MULTI_ON_ERROR
-#logKindFlag: ESMF_LOGKIND_NONE
 
 # EARTH #
 EARTH_component_list: MED ATM DAT OCN
@@ -14,17 +13,16 @@ EARTH_attributes::
 
 # MED #
 MED_model:                      cmeps
-MED_petlist_bounds:             0 239
+_MED_petlist_bounds_
 MED_attributes::
   Verbosity = 0
   Diagnostic = 0
-  DumpFields = true
+  DumpFields = false
   ATM_model = fv3
   DAT_model = datm
   OCN_model = mom6
   MED_model = cmeps
   history_n = 6
-  #history_option = nsteps
   history_option = nhours
   history_ymd = -999
   coupling_mode = hafs_mom6
@@ -34,7 +32,7 @@ MED_attributes::
 
 # ATM #
 ATM_model:                      fv3
-ATM_petlist_bounds:             0 299
+_ATM_petlist_bounds_
 ATM_attributes::
   Verbosity = 0
   Diagnostic = 0
@@ -42,34 +40,34 @@ ATM_attributes::
   DumpFields = false
   history_n = 6
   history_option = nhours
-  stop_n = 24
-  stop_option = nhours
+  #stop_n = 24
+  #stop_option = nhours
   stop_ymd = -999
   write_restart_at_endofrun = .true.
 ::
 
 DAT_model:                     datm
-DAT_petlist_bounds:            0 239
+_DAT_petlist_bounds_
 DAT_attributes::
   Verbosity = 0
   DumpFields = false
   mesh_atm = DATM_INPUT/hafs_gfs_mesh.nc
   diro = "."
   logfile = atm.log
-  stop_n = 24
-  stop_option = nhours
+  #stop_n = 24
+  #stop_option = nhours
   stop_ymd = -999
   #write_restart_at_endofrun = .true.
 ::
 
 # OCN #
 OCN_model:                      mom6
-OCN_petlist_bounds:             300 359
+_OCN_petlist_bounds_
 OCN_attributes::
   Verbosity = 0
   Diagnostic = 0
   DumpFields = false
-  history_n = 6
+  history_n = 3
   history_option = nhours
   merge_import = .true.
   skip_first_import = .true.
@@ -124,7 +122,7 @@ ALLCOMP_attributes::
   ScalarFieldName = cpl_scalars
   start_type = startup
   case_name = ufs.hafs
-  restart_n = 24
+  restart_n = 6
   restart_option = nhours
   restart_ymd = -999
   use_mommesh = true
@@ -133,9 +131,6 @@ ALLCOMP_attributes::
   use_coldstart = true
   coldair_outbreak_mod = .false.
   flds_wiso = .false.
-  #flux_convergence = 0.0
-  #flux_max_iteration = 2
-  #ocn_surface_flux_scheme = 0
   orb_eccen = 1.e36
   orb_iyear = 2000
   orb_iyear_align = 2000
@@ -143,7 +138,7 @@ ALLCOMP_attributes::
   orb_mvelp = 1.e36
   orb_obliq = 1.e36
   mediator_present = true
-  stop_n = 24
+  stop_n = _end_hour_
   stop_option = nhours
   stop_ymd = -999
 ::

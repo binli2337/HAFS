@@ -55,6 +55,7 @@
   <!ENTITY GFSVER   "@[GFSVER:-PROD2019]">
   <!ENTITY COMgfs   "@[COMgfs:-&WORKhafs;/hafsdata]">
   <!ENTITY COMrtofs "@[COMrtofs:-&WORKhafs;/hafsdata]">
+  <!ENTITY COMmom6  "@[COMmom6:-&WORKhafs;/hafsdata]">
 
   <!-- The output conf file for each cycle: -->
   <!ENTITY CONFhafs "&COMhafs;/&STORMLABEL;.conf">
@@ -86,6 +87,7 @@
   <!ENTITY RUN_ANALYSIS_MERGE "@[RUN_ANALYSIS_MERGE]">
   <!ENTITY RUN_ANALYSIS_MERGE_ENS "@[RUN_ANALYSIS_MERGE_ENS]">
   <!ENTITY RUN_OCEAN "@[RUN_OCEAN]">
+  <!ENTITY RUN_ATM_DATM_OCEAN "@[RUN_ATM_DATM_OCEAN]">
   <!ENTITY RUN_WAVE "@[RUN_WAVE]">
   <!ENTITY RUN_DATM "@[RUN_DATM]">
   <!ENTITY RUN_DOCN "@[RUN_DOCN]">

@@ -1,9 +1,9 @@
 stream_info:               GFS_HAFS
-taxmode01:                 extend
+taxmode01:                 limit
 mapalgo01:                 bilinear
 tInterpAlgo01:             linear
 readMode01:                single
-dtlimit01:                 1.e30
+dtlimit01:                 1.0
 stream_offset01:           0
 yearFirst01:               _yearFirst_
 yearLast01:                _yearLast_
