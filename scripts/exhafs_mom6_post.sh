@@ -47,7 +47,8 @@ FHR_MOM6=$NOUTMOM6
 while [ $FHR -le $NHRS ];
 do
 
-cd ${DATA}
+#cd ${DATA}
+cd ${COMhafs}
 
 # do post processing here
 
@@ -56,8 +57,9 @@ YYYY=`echo $NEWDATE | cut -c1-4`
 MM=`echo $NEWDATE | cut -c5-6`
 DD=`echo $NEWDATE | cut -c7-8`
 HH=`echo $NEWDATE | cut -c9-10`
-if [ -s ${WORKhafs}/forecast/ocn_${YYYY}_${DD}_${HH}.nc ]; then
-  $NCP ${WORKhafs}/forecast/ocn_${YYYY}_${DD}_${HH}.nc ${COMhafs}/ocn_${YYYY}_${DD}_${HH}.nc
+if [ -f ${WORKhafs}/forecast/ocn_${YYYY}_${MM}_${DD}_${HH}.nc ]; then
+   #cp ${WORKhafs}/forecast/ocn_${YYYY}_${MM}_${DD}_${HH}.nc ${COMhafs}/ocn_${YYYY}_${MM}_${DD}_${HH}.nc
+   cp ${WORKhafs}/forecast/ocn_${YYYY}_${MM}_${DD}_${HH}.nc .
 fi
 
 IFHR=`expr $IFHR + 1`
