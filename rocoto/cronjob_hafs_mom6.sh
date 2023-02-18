@@ -3,12 +3,16 @@ set -x
 date
 
 # NOAA RDHPCS Hera
-HOMEhafs=/scratch1/NCEPDEV/hwrf/save/${USER}/HAFS
+#HOMEhafs=/scratch1/NCEPDEV/hwrf/save/${USER}/HAFS
+#source ${HOMEhafs}/ush/hafs_pre_job.sh.inc
+# NOAA RDHPCS Jet
+HOMEhafs=/mnt/lfs4/HFIP/hwrfv3/${USER}/HAFS
+source /mnt/lfs4/HFIP/hwrfv3/${USER}/HAFS/ush/hafs_pre_job.sh.inc
+
 dev="-s sites/hera.ent -f"
 PYTHON3=/apps/intel/intelpython3/bin/python3
 
 #HOMEhafs=${HOMEhafs:-/lfs/h2/emc/hur/noscrub/${USER}/save/HAFS}
-source ${HOMEhafs}/ush/hafs_pre_job.sh.inc
 
 cd ${HOMEhafs}/rocoto
 EXPT=$(basename ${HOMEhafs})
@@ -44,7 +48,7 @@ scrubopt="config.scrub_work=no config.scrub_com=no"
  # Regional low-resolution static NATL basin-focused configuration with atm-datm-mom6 coupling
  ./run_hafs.py ${opts} 2020082512 13L HISTORY \
      config.EXPT=${EXPT} config.SUBEXPT=${EXPT}_rt_regional_static_C192s1n4_atm_datm_mom6 \
-     config.NHRS=12 ${scrubopt} \
+     config.NHRS=6 ${scrubopt} \
      ../parm/hafs_regional_static_C192s1n4_mom6.conf \
      ../parm/hafs_mom6.conf
 #     ../parm/hafs_hycom_ww3.conf \

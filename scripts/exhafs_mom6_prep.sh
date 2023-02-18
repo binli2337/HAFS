@@ -28,14 +28,8 @@ PDY_prior=`echo ${CDATEprior} | cut -c1-8`
 cyc_prior=`echo ${CDATEprior} | cut -c9-10`
 
 WGRIB2=${WGRIB2:-wgrib2}
-#CHGRESCUBEEXEC=${CHGRESCUBEEXEC:-${EXEChafs}/hafs_chgres_cube.x}
 
-#ENSDA=${ENSDA:-NO}
-#FGAT_MODEL=${FGAT_MODEL:-gfs}
-#FGAT_HR=${FGAT_HR:-00}
 mom6_intercom=${WORKhafs}/intercom/mom6
-
-# Set options specific to the deterministic/ensemble forecast
 
 # Generate the ICs and BC hour 0
 if [ $gtype = regional ] ; then
@@ -56,21 +50,49 @@ cd $DATA
 #mom6 ic
 #${USHhafs}/mom6_ic.sh $CDATE
 #./mom6_ic.sh $CDATE
-ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/rtofs_ssh_ic*nc ${OUTDIR}
-ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/rtofs_ts_ic*nc ${OUTDIR}
+if [ ${machine} = "hera" ]; then
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/rtofs_ssh_ic.nc ${OUTDIR}
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/rtofs_ts_ic.nc ${OUTDIR}
+fi
+if [ ${machine} = "jet" ]; then
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/rtofs_ssh_ic.nc ${OUTDIR}
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/rtofs_ts_ic.nc ${OUTDIR}
+fi
 #
 #mom6 lbc
 #${USHhafs}/mom6_lbc.sh $CDATE
 #./mom6_lbc.sh $CDATE
-ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc*nc ${OUTDIR}
-#mv obc_ts_*.nc ${OUTDIR}/obc_ts_*nc.nc
-#mv obc_uv_*.nc ${OUTDIR}/obc_uv_*nc.nc
-#mv obc_ssh_*.nc ${OUTDIR}/obc_ssh_*nc.nc
-#
+if [ ${machine} = "hera" ]; then
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc_ssh_east.nc ${OUTDIR}
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc_ssh_north.nc ${OUTDIR}
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc_ssh_south.nc ${OUTDIR}
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc_ts_east.nc ${OUTDIR}
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc_ts_north.nc ${OUTDIR}
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc_ts_south.nc ${OUTDIR}
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc_uv_east.nc ${OUTDIR}
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc_uv_north.nc ${OUTDIR}
+ln -sf /scratch1/NCEPDEV/hwrf/noscrub/Bin.Li/hafs-ic-bc/obc_uv_south.nc ${OUTDIR}
+fi
+if [ ${machine} = "jet" ]; then
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_ssh_east.nc ${OUTDIR}
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_ssh_north.nc ${OUTDIR}
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_ssh_south.nc ${OUTDIR}
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_ts_east.nc ${OUTDIR}
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_ts_north.nc ${OUTDIR}
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_ts_south.nc ${OUTDIR}
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_uv_east.nc ${OUTDIR}
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_uv_north.nc ${OUTDIR}
+ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_uv_south.nc ${OUTDIR}
+fi
 # gfs forcing for mom6
 #${USHhafs}/gfs_global_forcing.sh $CDATE
 #./gfs_global_forcing.sh $CDATE
 # final output forcing files are in OUTDIR
+if [ ${machine} = "hera" ]; then
 cp /scratch1/NCEPDEV/stmp2/Bin.Li/hafs_mom6_tmp/test_2020082512_126h/DATM_INPUT/gfs_global_2020082512.nc ${OUTDIR}
 #mv gfs_global_forcing$CDATE.nc ${OUTDIR}/gfs_global_forcing$CDATE.nc
+fi
+if [ ${machine} = "jet" ]; then
+cp /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hwrf-data/DATM_INPUT/gfs_global_2020082512.nc ${OUTDIR}
+fi
 exit

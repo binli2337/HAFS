@@ -17,7 +17,8 @@ elif [ ${target} == "hera" ]; then
 elif [ ${target} == "orion" ]; then
   FIXROOT=/work/noaa/hwrf/noscrub/hafs-fix-files/hafs-${FIXversion}-fix/fix
 elif [ ${target} == "jet" ]; then
-  FIXROOT=/lfs4/HFIP/hwrf-data/hafs-fix-files/hafs-${FIXversion}-fix/fix
+  #FIXROOT=/lfs4/HFIP/hwrf-data/hafs-fix-files/hafs-${FIXversion}-fix/fix
+  FIXROOT=/lfs4/HFIP/hwrfv3/Bin.Li/hwrf-data/hafs-fix-files/hafs-20230125-fix/fix
 else
   echo "Unknown site " ${target}
   exit 1
