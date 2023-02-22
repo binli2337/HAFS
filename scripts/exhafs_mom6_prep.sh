@@ -58,6 +58,10 @@ if [ ${machine} = "jet" ]; then
 ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/rtofs_ssh_ic.nc ${OUTDIR}
 ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/rtofs_ts_ic.nc ${OUTDIR}
 fi
+if [ ${machine} = "orion" ]; then
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/rtofs_ssh_ic.nc ${OUTDIR}
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/rtofs_ts_ic.nc ${OUTDIR}
+fi
 #
 #mom6 lbc
 #${USHhafs}/mom6_lbc.sh $CDATE
@@ -84,6 +88,17 @@ ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_uv_east.nc ${OUTDIR}
 ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_uv_north.nc ${OUTDIR}
 ln -sf /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hafs-ic-bc/obc_uv_south.nc ${OUTDIR}
 fi
+if [ ${machine} = "orion" ]; then
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/obc_ssh_east.nc ${OUTDIR}
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/obc_ssh_north.nc ${OUTDIR}
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/obc_ssh_south.nc ${OUTDIR}
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/obc_ts_east.nc ${OUTDIR}
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/obc_ts_north.nc ${OUTDIR}
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/obc_ts_south.nc ${OUTDIR}
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/obc_uv_east.nc ${OUTDIR}
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/obc_uv_north.nc ${OUTDIR}
+ln -sf /work/noaa/hwrf/noscrub/libin/hafs-ic-bc/obc_uv_south.nc ${OUTDIR}
+fi
 # gfs forcing for mom6
 #${USHhafs}/gfs_global_forcing.sh $CDATE
 #./gfs_global_forcing.sh $CDATE
@@ -94,5 +109,8 @@ cp /scratch1/NCEPDEV/stmp2/Bin.Li/hafs_mom6_tmp/test_2020082512_126h/DATM_INPUT/
 fi
 if [ ${machine} = "jet" ]; then
 cp /mnt/lfs4/HFIP/hwrfv3/Bin.Li/hwrf-data/DATM_INPUT/gfs_global_2020082512.nc ${OUTDIR}
+fi
+if [ ${machine} = "orion" ]; then
+cp /work/noaa/hwrf/noscrub/libin/gfs_forcing/gfs_global_2020082512.nc ${OUTDIR}
 fi
 exit

@@ -2,12 +2,25 @@
 set -x
 date
 
+echo $USER,$HOMEhafs
 # NOAA RDHPCS Hera
-HOMEhafs=/scratch1/NCEPDEV/hwrf/save/${USER}/HAFS
-dev="-s sites/hera.ent -f"
-PYTHON3=/apps/intel/intelpython3/bin/python3
-HOMEhafs=${HOMEhafs:-/lfs/h2/emc/hur/noscrub/${USER}/save/HAFS}
+#source ${HOMEhafs}/ush/hafs_pre_job.sh.inc
+#HOMEhafs=/scratch1/NCEPDEV/hwrf/save/${USER}/HAFS
+#source ${HOMEhafs}/ush/hafs_pre_job.sh.inc
+#dev="-s sites/hera.ent -f"
+#
+# NOAA RDHPCS Jet
+#HOMEhafs=/mnt/lfs4/HFIP/hwrfv3/${USER}/HAFS
+#source ${HOMEhafs}/ush/hafs_pre_job.sh.inc
+#
+# NOAA RDHPCS Orion
+HOMEhafs=/work/noaa/hwrf/save/${USER}/HAFS
 source ${HOMEhafs}/ush/hafs_pre_job.sh.inc
+
+#HOMEhafs=${HOMEhafs:-/lfs/h2/emc/hur/noscrub/${USER}/save/HAFS}
+
+echo $USER, $HOMEhafs
+PYTHON3=/apps/intel/intelpython3/bin/python3
 
 cd ${HOMEhafs}/rocoto
 EXPT=$(basename ${HOMEhafs})
