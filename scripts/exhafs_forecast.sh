@@ -17,6 +17,7 @@ hh=$(echo ${CDATE} | cut -c9-10)
 
 PARMforecast=${PARMforecast:-${PARMhafs}/forecast/regional}
 PARMhycom=${PARMhycom:-${PARMhafs}/hycom/regional}
+PARMmom6=${PARMmom6:-${PARMhafs}/mom6/regional}
 PARMww3=${PARMww3:-${PARMhafs}/ww3/regional}
 FIXam=${FIXam:-${FIXhafs}/fix_am}
 FIXcrtm=${FIXcrtm:-${CRTM_FIX:?}}
@@ -169,9 +170,13 @@ if [ ${warm_start_opt} -eq 0 ]; then
   RESTARTinp="UNNEEDED"
 fi
 
+# Set default options for IAU
+iau_inc_files=","
+iau_delthrs=6
+iaufhrs=0
+
 # Sepcial settings if this is an atm_init forecast run
 if [ ${RUN_INIT:-NO} = YES ]; then
-
 if [ "${ENSDA}" = YES ]; then
   FIXgrid=${FIXgrid:-${WORKhafs}/intercom/grid_ens}
   INPdir=${INPdir:-${WORKhafs}/intercom/chgres_ens/mem${ENSID}}
@@ -338,6 +343,7 @@ icplocn2atm=${icplocn2atm:-0}
 cplwav=${cplwav:-.false.}
 cplwav2atm=${cplwav2atm:-.false.}
 INPUT_WNDFLD=${INPUT_WNDFLD:-"C F"}
+INPUT_CURFLD=${INPUT_CURFLD:-"F F"}
 cpl_dt=${cpl_dt:-360}
 ocean_start_dtg=${ocean_start_dtg:-43340.00000}
 base_dtg=${CDATE:-2019082900}
@@ -680,6 +686,7 @@ if [ $cpl_atm_ocn = cmeps_2way ] && [ $cpl_atm_wav = cmeps_2way ]; then
   cplwav=.true.
   cplwav2atm=.true.
   INPUT_WNDFLD="C F"
+  INPUT_CURFLD="C F"
 # CMEPS based two-way atm-ocn coupling and one-way atm-wav coupling from atm to wav only
 elif [ $cpl_atm_ocn = cmeps_2way ] && [ $cpl_atm_wav = cmeps_1way_1to2 ]; then
   cplflx=.true.
@@ -687,6 +694,7 @@ elif [ $cpl_atm_ocn = cmeps_2way ] && [ $cpl_atm_wav = cmeps_1way_1to2 ]; then
   cplwav=.true.
   cplwav2atm=.false.
   INPUT_WNDFLD="C F"
+  INPUT_CURFLD="C F"
 # CMEPS based one-way atm-ocn coupling from atm to ocn only and two-way atm-wav coupling
 elif [ $cpl_atm_ocn = cmeps_1way_1to2 ] && [ $cpl_atm_wav = cmeps_2way ]; then
   cplflx=.true.
@@ -694,6 +702,7 @@ elif [ $cpl_atm_ocn = cmeps_1way_1to2 ] && [ $cpl_atm_wav = cmeps_2way ]; then
   cplwav=.true.
   cplwav2atm=.true.
   INPUT_WNDFLD="C F"
+  INPUT_CURFLD="C F"
 # CMEPS based one-way atm-ocn coupling from atm to ocn only and one-way atm-wav coupling from atm to wav only
 elif [ $cpl_atm_ocn = cmeps_1way_1to2 ] && [ $cpl_atm_wav = cmeps_1way_1to2 ]; then
   cplflx=.true.
@@ -701,6 +710,7 @@ elif [ $cpl_atm_ocn = cmeps_1way_1to2 ] && [ $cpl_atm_wav = cmeps_1way_1to2 ]; t
   cplwav=.true.
   cplwav2atm=.false.
   INPUT_WNDFLD="C F"
+  INPUT_CURFLD="C F"
 # Currently unsupported coupling option combinations
 else
   echo "FATAL ERROR: Unsupported coupling options: cpl_atm_ocn=${cpl_atm_ocn}; cpl_atm_wav=${cpl_atm_wav}"
@@ -1278,6 +1288,11 @@ for n in $(seq 2 ${nest_grids}); do
   shal_cnv_nml=$( echo ${shal_cnv} | cut -d , -f ${n} )
   do_deep_nml=$( echo ${do_deep} | cut -d , -f ${n} )
   blocksize=$(( ${npy_nml}/${layouty_nml} ))
+  if [ ${RUN_INIT:-NO} = NO ] && [ ${iau_regional:-.false.} = ".true." ] ; then
+    iau_inc_files="analysis_inc_nest0${inest}.nc"
+    # Linking increment file
+    ${NLN} ${RESTARTinp}/analysis_inc_nest0${inest}.nc INPUT/
+  fi
   atparse < input_nest.nml.tmp > input_nest0${inest}.nml
 done
 
@@ -1336,7 +1351,7 @@ if [ ${run_ocean} = yes ] && [ ${ocean_model} = mom6 ]; then
   atparse < ./stream.config.IN > ./stream.config
 
   # MOM_input
-  ${NCP} ${PARMhafs}/mom6/regional/hafs_mom6.input.IN ./hafs_mom6.input.IN
+  ${NCP} ${PARMmom6}/hafs_mom6.input.IN ./hafs_mom6.input.IN
   NIGLOBAL=$(ncks --trd -m INPUT/ocean_ts_ic.nc | grep -E -i ": lonh, size =" | cut -f 7 -d ' ' | uniq)
   NJGLOBAL=$(ncks --trd -m INPUT/ocean_ts_ic.nc | grep -E -i ": lath, size =" | cut -f 7 -d ' ' | uniq)
   atparse < ./hafs_mom6.input.IN > ./MOM_input
@@ -1395,7 +1410,7 @@ if [ ${run_wave} = yes ]; then
   # copy parms
   ${NCP} ${PARMww3}/ww3_shel.inp_tmpl ./ww3_shel.inp_tmpl
   # generate ww3_shel.inp
-  INPUT_CURFLD="F F"
+  INPUT_CURFLD=${INPUT_CURFLD:-"F F"}
   INPUT_WNDFLD=${INPUT_WNDFLD:-"C F"}
   INPUT_ICEFLD="F F"
   EDATE=$($NDATE +${NHRSint} ${CDATE})

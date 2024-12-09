@@ -1,8 +1,8 @@
 #! /bin/sh
 
-export hafs_ver=v2.0.3
+export hafs_ver=v2.0.6
 export gfs_ver=v16.3
-export rtofs_ver=v2.3
+export rtofs_ver=v2.4
 export obsproc_ver=v1.2
 
 export envvar_ver=1.0
@@ -29,13 +29,13 @@ export libpng_ver=1.6.37
 export libjpeg_ver=9c
 export hdf5_ver=1.14.0
 export netcdf_ver=4.9.2
-export fms_ver=2023.02.01
-export esmf_ver=8.5.0
+export fms_ver=2023.04
+export esmf_ver=8.6.0
 export mapl_ver=2.40.3
 export gftl_shared_ver=1.6.1
 export scotch_ver=7.0.4
 export bacio_ver=2.4.1
-export crtm_ver=2.4.0
+export crtm_ver=2.4.0.1
 export g2_ver=3.4.5
 export g2tmpl_ver=1.10.2
 export bufr_ver=12.0.0
@@ -56,7 +56,7 @@ export ncdiag_ver=1.1.2
 #export COMPATH=/lfs/h1/ops/prod/com/gfs:/lfs/h1/ops/prod/com/rtofs:/lfs/h1/ops/prod/com/obsproc
 #export COMINarch=/lfs/h1/ops/prod/com/gfs/v16.3/syndat
 #export COMINmsg=/lfs/h1/ops/prod/com/hafs/v1.0/inphfsa
-#export MAILTO="wei.wei@noaa.gov"
-#export MAILFROM="wei.wei@noaa.gov"
+#export MAILTO="floyd.fayton@noaa.gov"
+#export MAILFROM="floyd.fayton@noaa.gov"
 #export EMAIL_SDM=NO
 

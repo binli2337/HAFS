@@ -14,6 +14,7 @@ FGAT_HR=${FGAT_HR:-00}
 
 MPISERIAL=${MPISERIAL:-${EXEChafs}/hafs_tools_mpiserial.x}
 DATOOL=${DATOOL:-${EXEChafs}/hafs_tools_datool.x}
+SENDCOM=${SENDCOM:-YES}
 
 # Merge analysis or init
 if [ ${MERGE_TYPE} = analysis ]; then
@@ -31,6 +32,7 @@ if [ "${ENSDA}" = YES ]; then
   fi
   RESTARTdst=${WORKhafs}/intercom/RESTART_init_ens/mem${ENSID}
   RESTARTmrg=${WORKhafs}/intercom/RESTART_analysis_merge_ens/mem${ENSID}
+  RESTARTcom=${COMhafs}/${out_prefix}.RESTART_analysis_merge_ens/mem${ENSID}
 else
   if [ -e ${WORKhafs}/intercom/RESTART_analysis ]; then
     RESTARTsrc=${WORKhafs}/intercom/RESTART_analysis
@@ -42,6 +44,7 @@ else
   fi
   RESTARTdst=${WORKhafs}/intercom/RESTART_init
   RESTARTmrg=${WORKhafs}/intercom/RESTART_analysis_merge
+  RESTARTcom=${COMhafs}/${out_prefix}.RESTART_analysis_merge
 fi
 
 elif [ ${MERGE_TYPE} = init ]; then
@@ -230,6 +233,30 @@ for var in fv_core.res fv_tracer.res fv_srf_wnd.res sfc_data; do
     --out_file=${out_file} 2>&1 | tee ./merge_init_step3_${var}.log
   export err=$?; err_chk
 done
+
+# Step 4: Calculate d02 increments for IAU
+if [ ${iau_regional:-.false.} = ".true." ]; then
+  RESTARTbkg=${WORKhafs}/intercom/RESTART_vi
+  ${APRUNC} ${DATOOL} hafs_diff \
+   --in_dir=${RESTARTmrg} --in_dir2=${RESTARTbkg} \
+   --infile_date=${ymd}.${hh}0000 --out_file="analysis_inc" \
+   --nestdoms=$((${nest_grids:-1}-1)) --vi_cloud=${vi_cloud} 2>&1 | tee ./analysis_diff.log
+  export err=$?; err_chk
+  ${NCP} -rp ./analysis_inc_nest02.nc ${RESTARTmrg}/
+  # Replace d02 restart files
+  for var in fv_core.res fv_tracer.res fv_srf_wnd.res sfc_data; do
+    in_file=${RESTARTbkg}/${ymd}.${hh}0000.${var}.nest02.tile2.nc
+    out_file=${RESTARTmrg}/${ymd}.${hh}0000.${var}.nest02.tile2.nc
+    mrg_file=${RESTARTmrg}/${ymd}.${hh}0000.${var}.nest02.tile2.merge.nc
+    ${NCP} -rp ${out_file} ${mrg_file}
+    ${NCP} -rp ${in_file} ${out_file}
+  done
+fi
+
+if [ ${MERGE_TYPE} = analysis ] && [ $SENDCOM = YES ] ; then
+  mkdir -p ${RESTARTcom}
+  ${NCP} -rp ${RESTARTmrg}/* ${RESTARTcom}/
+fi
 
 else
   echo "FATAL ERROR: only support nest_grids = 1 or 2"

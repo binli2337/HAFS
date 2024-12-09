@@ -297,6 +297,7 @@ for file in $(awk '{if($1!~"!"){print $1}}' ./satinfo | sort | uniq); do
   ${NLN} ${FIXcrtm}/${file}.SpcCoeff.bin ./
   ${NLN} ${FIXcrtm}/${file}.TauCoeff.bin ./
 done
+${NLN} ${FIXcrtm}/amsua_metop-a_v2.SpcCoeff.bin ./amsua_metop-a_v2.SpcCoeff.bin
 
 ${NLN} ${FIXcrtm}/Nalli.IRwater.EmisCoeff.bin ./Nalli.IRwater.EmisCoeff.bin
 ${NLN} ${FIXcrtm}/NPOESS.IRice.EmisCoeff.bin ./NPOESS.IRice.EmisCoeff.bin
@@ -412,16 +413,16 @@ ${WLN} $SATWHR           satwhrbufr
 ${WLN} $GSNDBF1          gsnd1bufr
 ##${WLN} $B1HRS2           hirs2bufr
 ##${WLN} $B1MSU            msubufr
-${WLN} $B1HRS3           hirs3bufr
-${WLN} $B1HRS4           hirs4bufr
+#${WLN} $B1HRS3           hirs3bufr
+#${WLN} $B1HRS4           hirs4bufr
 ${WLN} $B1AMUA           amsuabufr
 ##${WLN} $B1AMUB           amsubbufr
 ${WLN} $B1MHS            mhsbufr
-${WLN} $ESHRS3           hirs3bufrears
+#${WLN} $ESHRS3           hirs3bufrears
 ${WLN} $ESAMUA           amsuabufrears
 ##${WLN} $ESAMUB           amsubbufrears
 #${WLN} $ESMHS            mhsbufrears
-${WLN} $HRS3DB           hirs3bufr_db
+#${WLN} $HRS3DB           hirs3bufr_db
 ##${WLN} $AMUADB           amsuabufr_db
 ##${WLN} $AMUBDB           amsubbufr_db
 #${WLN} $MHSDB            mhsbufr_db
