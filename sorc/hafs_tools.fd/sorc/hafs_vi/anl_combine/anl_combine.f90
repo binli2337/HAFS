@@ -31,6 +31,8 @@
 !                  Now input arguement is like this:
 !  ./hafs_vi_anl_combine.x ${gesfhr} ${pubbasin2} ${gfs_flag} ${initopt} ${vi_cloud}
 ! Revised by: Chuan-Kai Wang (NCEP/EMC) 2024: fixes for storm near dateline
+! Revised by: JungHoon Shin Sep 2024 NCEP/EMC: Generates information
+!             file for anl_enhance.f90
 !______________________________________________________________________________
 
 ! DECLARE VARIABLES
@@ -53,6 +55,7 @@
       real psfc_obs,cost,distm,distt,RMX_d,smax1,R05,smax2
       real beta,UU11,VV11,UUM1,VVM1,QQ,beta1,v34kt,v50kt,v64kt
       real psfc_env,psfc_obs1,z0,zzz,rrr,ps_rat
+      real roc1_save,roc2_save,xxx_save,yyy_save
       real RAD_1,FACT_P,TV1,ZSF1,PSF1,A,wt,PMN06,DDX,DDY
       real R34MOD,R34MODM,DEG2RAD,DEG2M,DEG2KM,FTMIN,FTMAX
       real RMAX_0,ROC1,ROC2,RMW1,RMW2,RMW1_MOD,RMW2_OBS,SLP_T1
@@ -1175,6 +1178,22 @@
       PRINT*, 'Using 2 parameters for storm-size correction.'
       PRINT*, 'Model RMW , Target  RMW  [deg]:  rmw1, rmw2 =', rmw1, rmw2
 
+      !========================= shin =====================
+      roc1_save = max(RAD_1/deg2km,rmw1+.01)
+      roc2_save = max(PRMAX/deg2km,rmw2+.01)
+      xxx_save  = .85*roc1_save ; yyy_save = 1.15*roc1_save
+      IF (DEPTH.eq.'S') THEN
+       xxx_save  = .85*roc1_save ; yyy_save = 1.15*roc1_save
+      ELSE IF (DEPTH.eq.'M') THEN
+       xxx_save  = .85*roc1_save ; yyy_save = 1.15*roc1_save
+      END IF
+      if(VRmax.LT.50.)then
+       roc1_save = roc2_save
+      else
+       roc2_save =  max(xxx_save,min(roc2_save,yyy_save))     !* ROCI correction
+      end if
+      !========================= shin =====================
+
 !     IF ( 1 == 1 ) THEN  !* Always use ROCI - - - - - - - -
 !      IF ( vobs < v64kt .OR. vvmax < v64kt ) THEN !* - - - -
       IF ( TSTH ) THEN !* - - - -
@@ -2056,7 +2075,13 @@
          write(69,*)K850
          write(69,*)TWMAX,RWMAX1,fact,psfc_obs
       CLOSE(69)
+      !shin
+      OPEN(70,file='parameter',form='formatted')
+         write(70,*)rmw2,roc2_save
+      CLOSE(70)
 
+      PRINT*, 'Target RMW for next step[deg] =', rmw2
+      PRINT*, 'Model/Target  ROCI[deg]: roc1,roc2 =', roc1_save, roc2_save
       PRINT*, 'Recycled vortex will be enhanced by bogus vortex.'
 
       beta=1.0

@@ -442,7 +442,11 @@ if [[ ${vmax_vit} -ge ${vi_bogus_vmax_threshold} ]] && [ ! -s ../anl_pert_guess/
     ${NLN} ${FIXhafs}/fix_vi/hafs_storm_30      fort.76
     ${NLN} ${FIXhafs}/fix_vi/hafs_storm_30      fort.77
   elif [[ ${vi_composite_vortex} = 2 ]]; then
-    ${NLN} ${FIXhafs}/fix_vi/hafs_storm_deep    fort.75
+    if [[ $pubbasin2 = AL ]] || [[ $pubbasin2 = EP ]] || [[ $pubbasin2 = CP ]]; then
+      ${NLN} ${FIXhafs}/fix_vi/hafs_storm_deep  fort.75
+    else
+      ${NLN} ${FIXhafs}/fix_vi/hafs_storm_deep_jtwc fort.75
+    fi
     ${NLN} ${FIXhafs}/fix_vi/hafs_storm_shallow fort.76
     ${NLN} ${FIXhafs}/fix_vi/hafs_storm_shallow fort.77
   else
@@ -532,7 +536,11 @@ else # warm-start from prior cycle or cold start from global/parent model
       ${NLN} ${FIXhafs}/fix_vi/hafs_storm_30      fort.76
       ${NLN} ${FIXhafs}/fix_vi/hafs_storm_30      fort.77
     elif [[ ${vi_composite_vortex} = 2 ]]; then
-      ${NLN} ${FIXhafs}/fix_vi/hafs_storm_deep    fort.75
+      if [[ $pubbasin2 = AL ]] || [[ $pubbasin2 = EP ]] || [[ $pubbasin2 = CP ]]; then
+        ${NLN} ${FIXhafs}/fix_vi/hafs_storm_deep  fort.75
+      else
+        ${NLN} ${FIXhafs}/fix_vi/hafs_storm_deep_jtwc fort.75
+      fi
       ${NLN} ${FIXhafs}/fix_vi/hafs_storm_shallow fort.76
       ${NLN} ${FIXhafs}/fix_vi/hafs_storm_shallow fort.77
     else

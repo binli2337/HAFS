@@ -4,9 +4,10 @@
                     HLON2,HLAT2,VLON2,VLAT2,                    &
                     CLON_NHC,CLAT_NHC,                          &
                     SLP_1,T_1,Q_1,U_1,V_1,th1,rp1,              &
-                    SLPE,TENV,PCST,HP,HV,ZMAX,vobs,             &
+                    SLPE,TENV,PCST,HP,HV,ZMAX,vobs,vobs_tc,     &
 		    dp_obs,p_obs,vslp,vrmax,PRMAX,RMN,          &
-		    U_2SB,T_2SB,SLP_2SB,R_2SB,temp_e,DEPTH,SN)
+		    U_2SB,T_2SB,SLP_2SB,R_2SB,temp_e,DEPTH,SN,  &
+                    Ir_vobs,basin,ithres)
 
 ! Authors and history
 ! Original author: QINGFU LIU, NCEP/EMC
@@ -17,6 +18,9 @@
 !                call the shallow composite vortex to alleviate low SLP issue
 ! Revised by: JungHoon Shin 2024 June NCEP/EMC
 !             Modify the code further when the code calls the shallow composite vortex
+!             If the TCVital SLP is lower than 930 hPa, it uses shallow composite vortex
+! Revised by: JungHoon Shin Sep 2024 NCEP/EMC
+!             Made further upgrades regarding SLP improvement (especially for WPAC) and better short range forecast
 ! SUBPROGRAM
 !   PRGRMMR
 !
@@ -26,11 +30,11 @@
 !
       implicit none
       INTEGER I,J,K,N,NX,NY,NZ,ICH,KMAX,KMX
-      integer NST,IR,IR1,NHCT,II1,JJ1,iparam,icut1,icut2
+      integer NST,IR,IR1,NHCT,II1,JJ1,iparam,icut1,icut2,Ir_vobs,ibasin,ithres
       real GAMMA,G,Rd,D608,Cp,eps6,pi,pi180,arad,deg2m,cost,zmax,vobs,p_obs,cost_old
       real count_smth,TWMAX,twsum,RWMAX,Rmax_0,fact,fact1,fact_v,vrmax,FC1,FC2,DFC
       real density,sum_vt,sum_vt2,th_m,xxx,yyy,rmw1,rmw2,dp_obs,roc1,roc2,cut_off
-      real aaa,bbb,ddd,RMN,RMN1,RMN2,prmax,DIF,DTX,DTY,DTR,RIJ_m,PIJ_m,vslp
+      real aaa,bbb,ddd,RMN,RMN1,RMN2,prmax,DIF,DTX,DTY,DTR,RIJ_m,PIJ_m,vslp,vobs_tc
 !
       PARAMETER (NST=5)
 !     PARAMETER (NX=420,NY=820,NZ=42) !* E-grid dimensions
@@ -78,6 +82,15 @@
       real(4) RF(24)    !shin
 
       CHARACTER DEPTH*1,SN*1
+      CHARACTER*2 :: basin
+
+      if(basin.eq.'AL' .or. basin.eq.'EP' .or.basin.eq.'CP')then
+       ibasin=0
+       write(*,*) 'NHC basin storm'
+      else
+       ibasin=1
+       write(*,*) 'JTWC basin storm'
+      endif
 !     CHARACTER SN*1,EW*1
 
 !     rewind 11
@@ -110,11 +123,18 @@
          NHCT=76
        ELSE IF(DEPTH.eq.'D'.and.vobs.gt.20.)THEN
          NHCT=75
+       ELSE IF(DEPTH.eq.'D' .and. vobs_tc.ge.26. .and. vslp.lt.99010. .and. vobs_tc.lt.50. .and. ithres.ne.0)THEN
+         if(ibasin.eq.0 .and. (Ir_vobs*1.).gt.10.0 )then
+          NHCT=75
+         endif
+         if(ibasin.eq.1)then
+          NHCT=75
+         endif
        END IF
 
-       if(vslp.lt.92010.)then
+       if(vslp.lt.93010.)then
          NHCT=77
-         print*,'minimum pressure < 920 mb', vslp, p_obs
+         print*,'shallow bogus vortex: minimum pressure < 930 mb', vslp, p_obs
        end if
 
       READ(NHCT)delc,thac    !* vortex lon, lat
@@ -140,7 +160,7 @@
          READ(NHCT)(ur(k,i),i=1,IR1) !* vortex radial wind
          READ(NHCT)(th(k,i),i=1,IR1) !* vortex tangen wind
          print*,'k,th1,2,200=',k,th(k,1),th(k,2),th(k,IR)
-         if(vslp.lt.92010.)then
+         if(vslp.lt.93010.)then
            do i=1,IR1
 !            ur(k,i)=ur(k,i)*0.1    !* reduce convergence
             ur(k,i)=ur(k,i)*0.5    !* reduce convergence
