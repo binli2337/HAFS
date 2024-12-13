@@ -7,7 +7,7 @@ source ${HOMEhafs}/ush/detect_machine.sh
 if [ ${MACHINE_ID} = gaeaC6 ]; then
    source $MODULESHOME/init/sh
    module use /autofs/ncrc-svm1_proj/hurr1/hafs/shared/modulefiles
-   module load rocoto
+   module load rocoto/1.3.7_fix
 else 
    source ${HOMEhafs}/ush/hafs_pre_job.sh.inc
 fi
