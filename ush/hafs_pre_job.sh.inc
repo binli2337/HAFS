@@ -97,17 +97,16 @@ elif [[ -d /lustre && -d /ncrc ]] ; then
   target=gaea
   module purge
 elif [[ -d /gpfs/f6 ]]; then
+  source $MODULESHOME/init/sh
+  export LMOD_IGNORE_CACHE=1
   module reset
   if [[ "$(hostname)" == "gaea6"* ]] || [[ "$(hostname)" == "c6"* ]]; then
     target=gaeaC6
-    source /opt/cray/pe/lmod/8.7.31/init/$__ms_shell
-    target=gaeaC6
     ulimit -s unlimited
   elif [[ "$(hostname)" == "dtn"* ]]; then
-    source $MODULESHOME/init/sh
+    target="Gaea_DTN"
     module use /sw/rdtn/modulefiles
     module load hsi
-    target="Gaea_DTN"
   fi
 elif [[ "$(hostname)" =~ "odin" ]] ; then
   target="odin"

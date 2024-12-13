@@ -119,7 +119,7 @@ esmf_ver=os.getenv("esmf_ver") or "8.6.0"
 load(pathJoin("esmf", esmf_ver))
 
 prepend_path("MODULEPATH", "/autofs/ncrc-svm1_proj/hurr1/hafs/shared/modulefiles")
-rocoto_ver=os.getenv("rocoto_ver") or "1.3.7"
+rocoto_ver=os.getenv("rocoto_ver") or "1.3.7_fix"
 load(pathJoin("rocoto", rocoto_ver))
 
 prepend_path("MODULEPATH", "/sw/rdtn/modulefiles")
