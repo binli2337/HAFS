@@ -93,7 +93,7 @@ OBS_INPUT::
    hdobbufr       uv          null        uv                  0.0     0     0
    hdobbufr       t           null        t                   0.0     0     0
    hdobbufr       q           null        q                   0.0     0     0
-   hdobbufr       spd         null        spd                 0.0     0     0
+!  hdobbufr       spd         null        spd                 0.0     0     0
    gpsrobufr      gps_bnd     null        gps                 0.0     0     0
    ssmirrbufr     pcp_ssmi    dmsp        pcp_ssmi            0.0    -1     0
    tmirrbufr      pcp_tmi     trmm        pcp_tmi             0.0    -1     0
