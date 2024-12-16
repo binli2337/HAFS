@@ -235,22 +235,50 @@ for var in fv_core.res fv_tracer.res fv_srf_wnd.res sfc_data; do
 done
 
 # Step 4: Calculate d02 increments for IAU
-if [ ${iau_regional:-.false.} = ".true." ]; then
+# Extract vmax from tcvitals (m/s)
+${NCP} ${WORKhafs}/tmpvit tcvitals
+vmax_vit=$(cat tcvitals | cut -c68-69 | bc -l)
+export err=$?; err_chk
+if [ ${vmax_vit} -gt ${fwd_vmax_threshold:-33} ] ; then
+  wave_num=${fwd_wave_number:-2}
+else
+  wave_num=-999
+fi
+
+if [ ${iau_regional:-.false.} = ".true." ] || [ ${wave_num} -gt "-99" ]; then
   RESTARTbkg=${WORKhafs}/intercom/RESTART_vi
-  ${APRUNC} ${DATOOL} hafs_diff \
-   --in_dir=${RESTARTmrg} --in_dir2=${RESTARTbkg} \
-   --infile_date=${ymd}.${hh}0000 --out_file="analysis_inc" \
-   --nestdoms=$((${nest_grids:-1}-1)) --vi_cloud=${vi_cloud} 2>&1 | tee ./analysis_diff.log
-  export err=$?; err_chk
-  ${NCP} -rp ./analysis_inc_nest02.nc ${RESTARTmrg}/
-  # Replace d02 restart files
-  for var in fv_core.res fv_tracer.res fv_srf_wnd.res sfc_data; do
-    in_file=${RESTARTbkg}/${ymd}.${hh}0000.${var}.nest02.tile2.nc
-    out_file=${RESTARTmrg}/${ymd}.${hh}0000.${var}.nest02.tile2.nc
-    mrg_file=${RESTARTmrg}/${ymd}.${hh}0000.${var}.nest02.tile2.merge.nc
-    ${NCP} -rp ${out_file} ${mrg_file}
-    ${NCP} -rp ${in_file} ${out_file}
+  in_grid=${RESTARTtmp}/grid_mspec.nest02_${yr}_${mn}_${dy}_${hh}.tile2.nc
+  iau_fwd_command="${APRUNC} ${DATOOL} fftw_iau"
+  if [ -s ${WORKhafs}/tmpvit ]; then
+    iau_fwd_command="${iau_fwd_command} --tcvital=./tcvitals"
+  fi
+  if [ -s ${in_grid} ]; then
+    iau_fwd_command="${iau_fwd_command} --in_grid=${in_grid}"
+  fi
+  if [ ${iau_regional} = ".true." ]; then
+    iau_fwd_command="${iau_fwd_command} --out_file=./analysis_inc_nest02.nc"
+  fi
+  if [ ${wave_num} -gt "-99" -a ${wave_num} -lt "99" ]; then
+    iau_fwd_command="${iau_fwd_command} --wave_num=${wave_num}"
+  fi
+# for var in fv_core.res fv_tracer.res fv_srf_wnd.res sfc_data; do
+  for var in fv_core.res fv_tracer.res; do
+    ${iau_fwd_command} \
+         --bg_file=${RESTARTbkg}/${ymd}.${hh}0000.${var}.nest02.tile2.nc \
+         --an_file=${RESTARTmrg}/${ymd}.${hh}0000.${var}.nest02.tile2.nc 2>&1 | tee ./analysis_fftw_iau.${var}.log
+    export err=$?; err_chk
   done
+  if [ ${iau_regional} = ".true." ]; then
+    ${NCP} -rp ./analysis_inc_nest02.nc ${RESTARTmrg}/
+    # Replace d02 restart files
+    for var in fv_core.res fv_tracer.res fv_srf_wnd.res sfc_data; do
+      in_file=${RESTARTbkg}/${ymd}.${hh}0000.${var}.nest02.tile2.nc
+      out_file=${RESTARTmrg}/${ymd}.${hh}0000.${var}.nest02.tile2.nc
+      mrg_file=${RESTARTmrg}/${ymd}.${hh}0000.${var}.nest02.tile2.merge.nc
+      ${NCP} -rp ${out_file} ${mrg_file}
+      ${NCP} -rp ${in_file} ${out_file}
+    done
+  fi
 fi
 
 if [ ${MERGE_TYPE} = analysis ] && [ $SENDCOM = YES ] ; then
