@@ -2,7 +2,7 @@
 set -x
 date
 
-HOMEhafs=${HOMEhafs:-/lfs/h2/emc/hur/noscrub/${USER}/save/hafsv2p0p1}
+HOMEhafs=${HOMEhafs:-/lfs/h2/emc/hur/noscrub/${USER}/save/hafs_202412}
 source ${HOMEhafs}/ush/hafs_pre_job.sh.inc
 
 cd ${HOMEhafs}/rocoto
@@ -11,12 +11,36 @@ EXPT=$(basename ${HOMEhafs})
 opts="-t -f"
 #===============================================================================
 
- # HAFSv2.0.1B configuration
- confopts="config.EXPT=${EXPT} config.SUBEXPT=${EXPT}_v2p0p1b \
-     dir.COMrtofs=/lfs/h2/emc/hur/noscrub/hafs-input/COMRTOFSv2.5 \
-     ../parm/hafs.v2.0.1b.conf"
+ # HAFSv2.1B baseline configuration
+ confopts="config.EXPT=${EXPT} config.SUBEXPT=${EXPT}_v2p1b_baseline ../parm/hafsv2p1b_baseline.conf \
+     dir.COMrtofs=/lfs/h2/emc/hur/noscrub/hafs-input/COMRTOFSv2.5_new" # wcoss2
+#    dir.COMrtofs=/work/noaa/hwrf/noscrub/hafs-input/COMRTOFSv2.5_new" # orion/hercules
+#    dir.COMrtofs=/lfs5/HFIP/hwrf-data/hafs-input/COMRTOFSv2.5_new" # jet
+#    dir.COMrtofs=/scratch1/NCEPDEV/hwrf/noscrub/hafs-input/COMRTOFSv2.5_new" # hera
+#    dir.COMrtofs=/gpfs/f6/drsa-hurr1/world-shared/noscrub/hafs-input/COMRTOFSv2.5_new" # gaeaC6
 
 #===============================================================================
+ # 2024 NATL Storms
+#./run_hafs.py ${opts} 2024061800-2024062012 01L HISTORY ${confopts} # Alberto
+#./run_hafs.py ${opts} 2024062818-2024070818 02L HISTORY ${confopts} # Beryl
+#./run_hafs.py ${opts} 2024063018-2024070100 03L HISTORY ${confopts} # Chris
+#./run_hafs.py ${opts} 2024080218-2024080812 04L HISTORY ${confopts} # Debby
+#./run_hafs.py ${opts} 2024081118-2024082006 05L HISTORY ${confopts} # Ernesto
+#./run_hafs.py ${opts} 2024090818-2024091200 06L HISTORY ${confopts} # Francine
+#./run_hafs.py ${opts} 2024091112-2024091806 07L HISTORY ${confopts} # Gordon
+#./run_hafs.py ${opts} 2024091518-2024091612 08L HISTORY ${confopts} # Eight
+#./run_hafs.py ${opts} 2024092312-2024092712 09L HISTORY ${confopts} # Helene
+#./run_hafs.py ${opts} 2024092600-2024093006 10L HISTORY ${confopts} # Isaac
+#./run_hafs.py ${opts} 2024092712-2024100100 11L HISTORY ${confopts} # Joyce
+#./run_hafs.py ${opts} 2024092918-2024100706 12L HISTORY ${confopts} # Kirk
+#./run_hafs.py ${opts} 2024100212-2024101212 13L HISTORY ${confopts} # Leslie
+#./run_hafs.py ${opts} 2024100512-2024101012 14L HISTORY ${confopts} # Milton
+#./run_hafs.py ${opts} 2024101818-2024102006 15L HISTORY ${confopts} # Nadine
+#./run_hafs.py ${opts} 2024101906-2024102212 16L HISTORY ${confopts} # Oscar
+#./run_hafs.py ${opts} 2024110118-2024110406 17L HISTORY ${confopts} # Patty
+#./run_hafs.py ${opts} 2024110400-2024111012 18L HISTORY ${confopts} # Rafael
+#./run_hafs.py ${opts} 2024111318-2024111800 19L HISTORY ${confopts} # Sara
+
  # 2023 NATL Storms
 #./run_hafs.py ${opts} 2023060218-2023060312 02L HISTORY ${confopts} # Arlene
 #./run_hafs.py ${opts} 2023061918-2023062412 03L HISTORY ${confopts} # Bret
@@ -65,6 +89,23 @@ opts="-t -f"
 #./run_hafs.py ${opts} 2022110706-2022111100 17L HISTORY ${confopts} # Nicole
 
 #===============================================================================
+ # 2024 EPAC storms
+#./run_hafs.py ${opts} 2024070412-2024070518 01E HISTORY ${confopts} # Aletta
+#./run_hafs.py ${opts} 2024072418-2024072618 02E HISTORY ${confopts} # Bud
+#./run_hafs.py ${opts} 2024073112-2024080600 03E HISTORY ${confopts} # Carlotta
+#./run_hafs.py ${opts} 2024080312-2024080518 04E HISTORY ${confopts} # Daniel
+#./run_hafs.py ${opts} 2024080412-2024080818 05E HISTORY ${confopts} # Emilia
+#./run_hafs.py ${opts} 2024080518-2024080712 06E HISTORY ${confopts} # Fabio
+#./run_hafs.py ${opts} 2024081812-2024083000 07E HISTORY ${confopts} # Gilma
+#./run_hafs.py ${opts} 2024082518-2024082906 08E HISTORY ${confopts} # Hector
+#./run_hafs.py ${opts} 2024091212-2024091506 09E HISTORY ${confopts} # Ileana
+#./run_hafs.py ${opts} 2024092218-2024092412 10E HISTORY ${confopts} # John part 1
+#./run_hafs.py ${opts} 2024092500-2024092718 10E HISTORY ${confopts} # John part 2
+#./run_hafs.py ${opts} 2024100118-2024100312 11E HISTORY ${confopts} # Eleven
+#./run_hafs.py ${opts} 2024102118-2024102706 12E HISTORY ${confopts} # Kristy
+#./run_hafs.py ${opts} 2024110118-2024110306 13E HISTORY ${confopts} # Lane
+#./run_hafs.py ${opts} 2024110612-2024110712 14E HISTORY ${confopts} # Fourteen
+
  # 2023 EPAC storms
 #./run_hafs.py ${opts} 2023062718-2023070212 01E HISTORY ${confopts} # Adrian
 #./run_hafs.py ${opts} 2023062900-2023070112 02E HISTORY ${confopts} # Beatriz
