@@ -248,7 +248,7 @@ fi
 if [ ${iau_regional:-.false.} = ".true." ] || [ ${wave_num} -gt "-99" ]; then
   RESTARTbkg=${WORKhafs}/intercom/RESTART_vi
   in_grid=${RESTARTtmp}/grid_mspec.nest02_${yr}_${mn}_${dy}_${hh}.tile2.nc
-  iau_fwd_command="${APRUNC} ${DATOOL} fftw_iau"
+  iau_fwd_command="${APRUNO} ${DATOOL} fftw_iau"
   if [ -s ${WORKhafs}/tmpvit ]; then
     iau_fwd_command="${iau_fwd_command} --tcvital=./tcvitals"
   fi
