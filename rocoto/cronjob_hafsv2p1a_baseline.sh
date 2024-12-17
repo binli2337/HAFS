@@ -20,8 +20,7 @@ opts="-t -f"
 #    dir.COMrtofs=/gpfs/f6/drsa-hurr1/world-shared/noscrub/hafs-input/COMRTOFSv2.5_new" # gaeaC6
 
  # Technical testing
-#scrubopt="config.scrub_work=no config.scrub_com=no config.archive=none"
-#./run_hafs.py ${opts} 2024092506-2024092512 09L HISTORY ${confopts} ${scrubopt} # Helene
+#./run_hafs.py ${opts} 2024092506-2024092512 09L HISTORY ${confopts} # Helene
 
 #===============================================================================
  # 2024 NATL Storms
