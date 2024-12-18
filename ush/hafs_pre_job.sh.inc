@@ -83,6 +83,18 @@ elif [[ -d /glade ]] ; then
   fi
   target=cheyenne
   module purge
+elif [[ -d /gpfs/f6 ]]; then
+  source $MODULESHOME/init/sh
+  export LMOD_IGNORE_CACHE=1
+  module reset
+  if [[ "$(hostname)" == "gaea6"* ]] || [[ "$(hostname)" == "c6"* ]]; then
+    target=gaeaC6
+    ulimit -s unlimited
+  elif [[ "$(hostname)" == "dtn"* ]]; then
+    target="Gaea_DTN"
+    module use /sw/rdtn/modulefiles
+    module load hsi
+  fi
 elif [[ -d /lustre && -d /ncrc ]] ; then
   # We are on GAEA.
   if ( ! eval module help > /dev/null 2>&1 ) ; then
@@ -96,18 +108,6 @@ elif [[ -d /lustre && -d /ncrc ]] ; then
   fi
   target=gaea
   module purge
-elif [[ -d /gpfs/f6 ]]; then
-  source $MODULESHOME/init/sh
-  export LMOD_IGNORE_CACHE=1
-  module reset
-  if [[ "$(hostname)" == "gaea6"* ]] || [[ "$(hostname)" == "c6"* ]]; then
-    target=gaeaC6
-    ulimit -s unlimited
-  elif [[ "$(hostname)" == "dtn"* ]]; then
-    target="Gaea_DTN"
-    module use /sw/rdtn/modulefiles
-    module load hsi
-  fi
 elif [[ "$(hostname)" =~ "odin" ]] ; then
   target="odin"
 else

@@ -100,10 +100,10 @@ def where():
                 here=NOAATheia()
         elif os.path.exists('/lfs/h2/emc'):
             here=WCOSS2()
-        elif os.path.exists('/lustre/f2'):
-            here=NOAAGAEA()
         elif os.path.exists('/gpfs/f6'):
             here=NOAAGaeaC6()
+        elif os.path.exists('/lustre/f2'):
+            here=NOAAGAEA()
         else:
             here=Cluster(False,False,False,'noname','noname')
     return here
@@ -187,7 +187,7 @@ class NOAAGaeaC6(Cluster):
     restricted data, and specifies that group quotas are not in use."""
     def __init__(self):
         """!constructor for NOAAGaeaC6"""
-        super(NOAAGaeaC6,self).__init__(False,True,False,'gaea',
+        super(NOAAGaeaC6,self).__init__(False,True,False,'gaeaC6',
                                       'gaea.rdhpcs.noaa.gov')
 
 class NOAAHera(Cluster):
