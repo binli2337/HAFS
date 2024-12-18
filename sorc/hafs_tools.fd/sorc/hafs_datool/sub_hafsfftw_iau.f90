@@ -1,5 +1,5 @@
 !========================================================================================
-  subroutine hafsfftw_iau(an_file, grid_file, bg_file, out_file, wave_num)
+  subroutine hafsfftw_iau(an_file, grid_file, bg_file, out_file, wave_num, vars)
 
 !-----------------------------------------------------------------------------
 ! HAFS DA tool - fftw_iau
@@ -29,7 +29,7 @@
   use var_type
 
   implicit none
-  character (len=*), intent(in) :: an_file, grid_file, bg_file, out_file
+  character (len=*), intent(in) :: an_file, grid_file, bg_file, out_file, vars
   integer, intent(in)           :: wave_num
 
   type(grid2d_info)  :: grid
@@ -49,7 +49,7 @@
   real, allocatable, dimension(:,:)     :: dat21, dat22, vr, vt, vtr, vrr
   character(len=nf90_max_name) :: varname  !, dimname
   character(len=50)  :: strrep
-  integer            :: anid, bgid, varid, ndims, nvars, xtype, dimids(5), vdim(5)
+  integer            :: anid, bgid, varid, ndims, nvars, xtype, dimids(5), vdim(5), nvarindex
   integer            :: wndsize, nx, ixv, jxv
   real               :: pil, xc, yc, xr, sta, sta1, a, b
   character(len=3)   :: kxc
@@ -140,6 +140,11 @@
      call nccheck(nf90_inquire_variable(bgid,nv,varname,xtype,ndims,dimids), &
                   'wrong in inquire_variable '//trim(varname), .false.)
      write(*,*)' my_proc_id,nprocs,nv,varname: ',my_proc_id,nprocs,nv, trim(varname)
+
+     if ( trim(vars) == 'all' .or. trim(vars) == 'ALL' ) nvarindex=1
+     if ( nvarindex<1 ) nvarindex=index(':'//trim(vars)//':', ':'//trim(varname)//':')
+     if ( nvarindex<1 ) nvarindex=index(','//trim(vars)//',', ','//trim(varname)//',')
+     if ( nvarindex<1 ) cycle do_input_var_loop
 
      do i = 1, ndims
         call nccheck(nf90_inquire_dimension(bgid,dimids(i), len=vdim(i)), 'wrong in inquire '//trim(varname)//' dim', .false.)
@@ -351,7 +356,7 @@
               dat21=0.0; dat22=0.0
               dat21(11:nx-10,11:nx-10)=fdat_incr(tc_grid_x-fwd_radius+10:tc_grid_x+fwd_radius-10,tc_grid_y-fwd_radius+10:tc_grid_y+fwd_radius-10,k,n)
               call decom(dat21,dat22,nx,nx,wndsize,wave_num,0)
-              !fdat_incr(:,:,k,n)=0.0
+              fdat_incr(:,:,k,n)=0.0
               do j = 1,nx; do i = 1,nx
                  xc=float(j)-1.0*tc_grid_x; yc=float(i)-1.0*tc_grid_y
                  xr=sqrt(xc*xc+yc*yc)

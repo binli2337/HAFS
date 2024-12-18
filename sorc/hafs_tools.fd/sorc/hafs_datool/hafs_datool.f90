@@ -130,7 +130,7 @@
   character (len=2500) :: in_dir='w', in_file='w', in_grid='w', &
                           vortex_position_file='w', tcvital_file='w', besttrackfile='w', &
                           out_dir='w', out_grid='w', out_data='w', out_file='w', infile_date='w', &
-                          in_dir2='w', an_file='w', bg_file='w'
+                          in_dir2='w', an_file='w', bg_file='w', vars='all'
   character (len=50  ) :: vortexradius='w'  ! for vortexreplace, vortexradius=600:900 km
                                             ! for hafsvi_preproc, vortexradius=30 deg or 45 deg
   character (len=50  ) :: relaxzone=''      !
@@ -190,6 +190,7 @@
                case ('--an_file');        an_file=arg(j+1:n)
                case ('--bg_file');        bg_file=arg(j+1:n)
                case ('--wave_num');       wave_numc=arg(j+1:n)
+               case ('--vars');           vars=arg(j+1:n)
         end select
      enddo
   endif
@@ -283,7 +284,7 @@
 ! 5.0 --- fftw_iau
   if ( trim(actions) == "fftw_iau" ) then
      write(*,'(a)')' --- call hafsfftw_iau/hafs_datool for '//trim(an_file)
-     call hafsfftw_iau(trim(an_file),trim(in_grid),trim(bg_file),trim(out_file),wave_num)
+     call hafsfftw_iau(trim(an_file),trim(in_grid),trim(bg_file),trim(out_file),wave_num,trim(vars))
   endif
 
 !----------------------------------------------------------------
