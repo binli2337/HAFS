@@ -187,7 +187,7 @@ class NOAAGaeaC6(Cluster):
     restricted data, and specifies that group quotas are not in use."""
     def __init__(self):
         """!constructor for NOAAGaeaC6"""
-        super(NOAAGaeaC6,self).__init__(False,True,False,'gaeaC6',
+        super(NOAAGaeaC6,self).__init__(False,True,False,'gaeac6',
                                       'gaea.rdhpcs.noaa.gov')
 
 class NOAAHera(Cluster):

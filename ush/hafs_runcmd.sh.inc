@@ -52,7 +52,7 @@ elif [ "$machine" = jet ] || [ "$machine" = hera ] || [ "$machine" = orion ] || 
   export APRUNF="time"
   export APRUNCFP="time"
   export BACKGROUND="&"
-elif [ "$machine" = gaeaC6 ]; then
+elif [ "$machine" = gaeac6 ]; then
   export APRUN="time"
   export APRUNS="srun --mem=0 --ntasks=1 --nodes=1 --ntasks-per-node=1 --cpus-per-task=1"
   export APRUNO="srun --mem=0 --exclusive --ntasks=1 --nodes=1 --ntasks-per-node=${NCTSK} --cpus-per-task=${PURE_OMP_THREADS}"

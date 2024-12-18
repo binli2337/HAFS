@@ -1,4 +1,4 @@
-  <!-- gaeaC6 -->
+  <!-- gaeac6 -->
   <!ENTITY SCHEDULER       "slurm">
   <!ENTITY ACCOUNT         "&CPU_ACCOUNT;">
   <!ENTITY QUEUE_PE        "normal"> <!-- queue for PE (parallel environment) jobs -->

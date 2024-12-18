@@ -88,10 +88,10 @@ elif [[ -d /gpfs/f6 ]]; then
   export LMOD_IGNORE_CACHE=1
   module reset
   if [[ "$(hostname)" == "gaea6"* ]] || [[ "$(hostname)" == "c6"* ]]; then
-    target=gaeaC6
+    target=gaeac6
     ulimit -s unlimited
   elif [[ "$(hostname)" == "dtn"* ]]; then
-    target="Gaea_DTN"
+    target="gaeac6dtn"
     module use /sw/rdtn/modulefiles
     module load hsi
   fi
@@ -130,11 +130,11 @@ if [[ Q"${HOMEhafs:-}" != "Q" ]] ; then
     module use /apps/ops/test/nco/modulefiles/core
     module load rocoto/${rocoto_ver:-"1.3.5"}
   fi
-  if [[ "${WHERE_AM_I}" = "gaeaC6" ]] ; then
+  if [[ "${WHERE_AM_I}" = "gaeac6" ]] ; then
      module use /autofs/ncrc-svm1_proj/hurr1/hafs/shared/modulefiles
      module load rocoto/1.3.7_fix
   fi
-  if [[ "${WHERE_AM_I}" != "Gaea_DTN" ]]; then
+  if [[ "${WHERE_AM_I}" != "gaeac6dtn" ]]; then
     module use ${HOMEhafs}/modulefiles
     module load hafs.${WHERE_AM_I}
   fi

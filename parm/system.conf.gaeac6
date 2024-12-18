@@ -46,6 +46,6 @@ cartopyDataDir=/gpfs/f6/drsa-hurr1/world-shared/noscrub/local/share/cartopy
 quilting_restart=.false.
 
 [holdvars]
-WHERE_AM_I=gaeaC6
+WHERE_AM_I=gaeac6
 WHICH_JET=none
 
