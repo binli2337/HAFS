@@ -130,6 +130,10 @@ if [[ Q"${HOMEhafs:-}" != "Q" ]] ; then
     module use /apps/ops/test/nco/modulefiles/core
     module load rocoto/${rocoto_ver:-"1.3.5"}
   fi
+  if [[ "${WHERE_AM_I}" = "gaeaC6" ]] ; then
+     module use /autofs/ncrc-svm1_proj/hurr1/hafs/shared/modulefiles
+     module load rocoto/1.3.7_fix
+  fi
   if [[ "${WHERE_AM_I}" != "Gaea_DTN" ]]; then
     module use ${HOMEhafs}/modulefiles
     module load hafs.${WHERE_AM_I}
