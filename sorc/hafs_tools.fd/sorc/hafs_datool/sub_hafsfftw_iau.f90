@@ -141,7 +141,9 @@
                   'wrong in inquire_variable '//trim(varname), .false.)
      write(*,*)' my_proc_id,nprocs,nv,varname: ',my_proc_id,nprocs,nv, trim(varname)
 
-     if ( trim(vars) == 'all' .or. trim(vars) == 'ALL' ) nvarindex=1
+
+     nvarindex=-99
+     if ( trim(vars) == 'all' .or. trim(vars) == 'ALL' .or. len_trim(vars) < 1 ) nvarindex=1
      if ( nvarindex<1 ) nvarindex=index(':'//trim(vars)//':', ':'//trim(varname)//':')
      if ( nvarindex<1 ) nvarindex=index(','//trim(vars)//',', ','//trim(varname)//',')
      if ( nvarindex<1 ) cycle do_input_var_loop
