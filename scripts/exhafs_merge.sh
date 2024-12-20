@@ -234,12 +234,14 @@ for var in fv_core.res fv_tracer.res fv_srf_wnd.res sfc_data; do
   export err=$?; err_chk
 done
 
+if [ ${RUN_GSI} = "YES" ] && [ ${GSI_D02} = "YES" ]; then
+
 # Step 4: Calculate d02 increments for IAU
 # Extract vmax from tcvitals (m/s)
 ${NCP} ${WORKhafs}/tmpvit tcvitals
 vmax_vit=$(cat tcvitals | cut -c68-69 | bc -l)
 export err=$?; err_chk
-if [ ${vmax_vit} -gt ${fwd_vmax_threshold:-33} ] ; then
+if [ ${vmax_vit} -gt ${fwd_vmax_threshold:-33} ]; then
   wave_num=${fwd_wave_number:-2}
 else
   wave_num=-999
@@ -281,7 +283,9 @@ if [ ${iau_regional:-.false.} = ".true." ] || [ ${wave_num} -gt "-99" ]; then
   fi
 fi
 
-if [ ${MERGE_TYPE} = analysis ] && [ $SENDCOM = YES ] ; then
+fi
+
+if [ ${MERGE_TYPE} = analysis ] && [ $SENDCOM = YES ]; then
   mkdir -p ${RESTARTcom}
   ${NCP} -rp ${RESTARTmrg}/* ${RESTARTcom}/
 fi
