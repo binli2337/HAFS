@@ -1548,7 +1548,8 @@ contains
           ! Check local variable and proceed accordingly
 
           if((hsa(i)%yymmdd(j) .ne. hsa_spval) .and. ((hsa(i)%tail(j) .eq. &
-               & 'SIGL') .or. (hsa(i)%tail(j) .eq. 'MANL'))) then
+               & 'SIGL') .or. (hsa(i)%tail(j) .eq. 'MANL')) .and.          &
+               & (hsa(i)%gmt(j) > -1 .and. hsa(i)%gmt(j) < 2360)) then
 
              ! Define local variables
 
