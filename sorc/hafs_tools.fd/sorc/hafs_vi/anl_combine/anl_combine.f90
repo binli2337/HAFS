@@ -48,7 +48,7 @@
       integer ictr,jctr,i_max,j_max,IMV,JMV,IR1,IR,K1,IR_1,id_storm
       integer IDAT,IHOUR,IFH,LAT,LON,IVFT,IPFT,IV34,IMAX1,JMAX1
       integer iparam,icst,jcst,ID_INDX,JD_INDX,imn1,imx1,jmn1,jmx1
-      real GAMMA,G,Rd,D608,Cp,COEF1,COEF2,COEF3,GRD,pi,pi_deg,pi180,DST1
+      real GAMMA,G,Rd,D608,Cp,COEF1,COEF2,COEF3,GRD,pi,pi_deg,pi180,DST1,press1
       real vobs,vobs_o,VRmax,psfc_cls,PRMAX,R34obs,R34obsm,pct_m,ps_rat2
       real acount,deltp,deltp1,rdgas1,arad,vs_t,vmax_s
       real eps1,eps2,eps3,eps4,eps5,eps6,rad2deg
@@ -812,34 +812,34 @@
         print*,'obs psfc_obs,PMN06=',psfc_obs,PMN06
         print*,'VMX06,vobs=',VMX06,vobs
 
-! for 2008 version only (large error in P-W relationship)
-! for correct P-W relation: PMN06_ct=max(PMN06_ct,psfc_obs-1000.)
-
-!        if(VMX06.gt.29..and.vobs.gt.29.)then
-        if(VMX06.gt.25..and.vobs.gt.25.)then
-           dpv_ct=-0.1515*(vobs)**0.628*(vobs-VMX06)        ! slope*dv
-           PMN06_ct=PMN06+dpv_ct*100.
-           if(PMN06_ct.lt.psfc_obs)then
-!             PMN06_ct=max(PMN06_ct,psfc_obs-7500.)         ! max difference is set to be 75mb
-!             PMN06_ct=max(PMN06_ct,psfc_obs-5500.)         ! max difference is set to be 75mb
-!             PMN06_ct=max(PMN06_ct,psfc_obs-3000.)         ! max difference is set to be 30mb
-            PMN06_ct=max(PMN06_ct,psfc_obs-2500.)         ! max difference is set to be 25mb
-!            PMN06_ct=max(PMN06_ct,psfc_obs-2000.)         ! max difference is set to be 20mb
-!            psfc_obs=0.5*(psfc_obs+PMN06_ct)              ! max difference is set to be 10mb
-             psfc_obs=PMN06_ct
-           end if
-           print*,'dpv_ct,PMN06_ct=',dpv_ct,PMN06_ct
-         end if
-
-        if(VMX06.gt.25..and.vobs.gt.25.)then
-          psfc_obs=min(SLP_T1,psfc_obs2)
-        end if
-        psfc_obs=max(psfc_obs,psfc_obs2+delt_p*0.10)
-
-        if(psfc_obs.lt.89500.)then
-           psfc_obs=min(89500.,psfc_obs2)
-        end if
-
+!! for 2008 version only (large error in P-W relationship)
+!! for correct P-W relation: PMN06_ct=max(PMN06_ct,psfc_obs-1000.)
+!
+!!        if(VMX06.gt.29..and.vobs.gt.29.)then
+!        if(VMX06.gt.25..and.vobs.gt.25.)then
+!           dpv_ct=-0.1515*(vobs)**0.628*(vobs-VMX06)        ! slope*dv
+!           PMN06_ct=PMN06+dpv_ct*100.
+!           if(PMN06_ct.lt.psfc_obs)then
+!!             PMN06_ct=max(PMN06_ct,psfc_obs-7500.)         ! max difference is set to be 75mb
+!!             PMN06_ct=max(PMN06_ct,psfc_obs-5500.)         ! max difference is set to be 75mb
+!!             PMN06_ct=max(PMN06_ct,psfc_obs-3000.)         ! max difference is set to be 30mb
+!            PMN06_ct=max(PMN06_ct,psfc_obs-2500.)         ! max difference is set to be 25mb
+!!            PMN06_ct=max(PMN06_ct,psfc_obs-2000.)         ! max difference is set to be 20mb
+!!            psfc_obs=0.5*(psfc_obs+PMN06_ct)              ! max difference is set to be 10mb
+!             psfc_obs=PMN06_ct
+!           end if
+!           print*,'dpv_ct,PMN06_ct=',dpv_ct,PMN06_ct
+!         end if
+!!
+!        if(VMX06.gt.25..and.vobs.gt.25.)then
+!          psfc_obs=min(SLP_T1,psfc_obs2)
+!        end if
+!        psfc_obs=max(psfc_obs,psfc_obs2+delt_p*0.10)
+!
+!        if(psfc_obs.lt.89500.)then
+!           psfc_obs=min(89500.,psfc_obs2)
+!        end if
+!
         print*,'cot psfc_obs,psfc_obs2,delt_p=',psfc_obs,psfc_obs2,delt_p
 
 !           *     *     *     *     *     *     *     *     *     *
@@ -2109,10 +2109,12 @@
 !     pct_m=pct_m+50.
 
       ps_rat2=psfc_obs1/(pct_m-100.)              ! - 1mb
+      if(ps_rat2.gt.10.)ps_rat2=10.0
+      if(ps_rat2.lt.(-10.))ps_rat2=-10.0
+
+      print*,'ps_rat2=',ps_rat2,psfc_obs1,pct_m
 
       IF (ps_rat2.LT.1.0) THEN
-
-         print*,'ps_rat2=',ps_rat2,psfc_obs1,pct_m
 
 !$omp parallel do &
 !$omp& private(i,j,k,TEK1,TEK2,ESRR)
@@ -2648,7 +2650,8 @@
          END IF
       END DO
       END DO
-      if(pct_m.gt.psfc_obs1)beta=1.0
+
+!     if(pct_m.gt.psfc_obs1)beta=1.0
 
       IF ( INITOPT > 0 )THEN
         beta=1.0
@@ -3290,6 +3293,18 @@
       write(*,*) 'DONE reverting from pressure to hybrid level!'
       endif
 !---------------------------------------------------------------------
+
+       press1=1.E20
+       DO J=1,NY
+       DO I=1,NX
+       if(press1.gt.SLP1(I,J))press1=SLP1(I,J)
+       END DO
+       END DO
+
+       write(*,98) vobs,vs_t,psfc_obs,press1
+ 98    format('anl_combine final: vmax_obs,vmax_mod,psfc_obs,psfc_mod=',4F16.6)
+       write(91,99) vobs,vs_t,psfc_obs,press1
+ 99    format(4F16.6)
 
       IUNIT=56
 

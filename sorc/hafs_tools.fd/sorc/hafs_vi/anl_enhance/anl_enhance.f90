@@ -1143,7 +1143,7 @@
         pt_c1=0.
 	DO J=1,NY
 	DO I=1,NX
-	  IF(pt_c1.LT.SLP_1(I,J))THEN
+	  IF(pt_c1.GT.SLP_1(I,J))THEN
 	    pt_c1=SLP_1(I,J)
 	  END IF
 	END DO
@@ -1521,7 +1521,10 @@
        END DO
        END DO
 
-       print*,'surface pressure=',press1
+       write(*,98) vobs_tc,vmax_1,psfc_obs,press1
+ 98    format('anl_enhance final: vmax_obs,vmax_mod,psfc_obs,psfc_mod=',4F16.6)
+       write(92,99) vobs_tc,vmax_1,psfc_obs,press1
+ 99    format(4F16.6)
 
        DO J=1,NY
        DO I=1,NX

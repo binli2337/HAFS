@@ -502,6 +502,7 @@ else # warm-start from prior cycle or cold start from global/parent model
   # output
   ${RLN} storm_env_new fort.36
   ${RLN} storm_anl_combine fort.56
+  ${RLN} storm_txt_combine fort.91
 
   gesfhr=${gesfhr:-6}
   gfs_flag=${gfs_flag:-6}
@@ -512,6 +513,7 @@ else # warm-start from prior cycle or cold start from global/parent model
   export err=$?; err_chk
   if [ -s storm_anl_combine ]; then
     ${NCP} -p storm_anl_combine storm_anl
+    ${NCP} -p storm_txt_combine storm_txt
   fi
 
   # If the combined storm is weaker than the tcvital intensity, add a small
@@ -551,6 +553,7 @@ else # warm-start from prior cycle or cold start from global/parent model
 
     # output
     ${RLN} storm_anl_enhance                     fort.56
+    ${RLN} storm_txt_enhance                     fort.92
 
     iflag_cold=${iflag_cold:-0}
     ${NCP} -p ${EXEChafs}/hafs_tools_vi_anl_enhance.x ./
@@ -558,6 +561,7 @@ else # warm-start from prior cycle or cold start from global/parent model
     echo 6 ${pubbasin2} ${iflag_cold} ${vi_cloud} ${vi_slp_adjust} | ${APRUNO} ./hafs_tools_vi_anl_enhance.x 2>&1 | tee ./vi_anl_enhance.log
     export err=$?; err_chk
     ${NCP} -p storm_anl_enhance storm_anl
+    ${NCP} -p storm_txt_enhance storm_txt
   fi
 
 fi
@@ -584,6 +588,7 @@ ${NCP} -rp ${RESTARTdst}/${CDATE:0:8}.${CDATE:8:2}0000* ${RESTARTout}/
 ${NCP} -rp ${RESTARTdst}/atmos_static*.nc ${RESTARTout}/
 ${NCP} -rp ${RESTARTdst}/grid_*spec*.nc ${RESTARTout}/
 ${NCP} -rp ${RESTARTdst}/oro_data*.nc ${RESTARTout}/
+${NCP} -rp ${DATA}/anl_storm/storm_txt ${RESTARTout}/
 
 for nd in $(seq 1 ${nest_grids}); do
   ${APRUNC} ${DATOOL} hafsvi_postproc \
@@ -596,6 +601,11 @@ for nd in $(seq 1 ${nest_grids}); do
       --out_dir=${RESTARTout} 2>&1 | tee ./vi_postproc_grid${nd}.log
   export err=$?; err_chk
 done
+
+# Deliver to COMhafs
+if [ $SENDCOM = YES ] && [ ${FGAT_MODEL} = gfs ] && [ ${FGAT_HR} = 00 ]; then
+  ${FCP} ${DATA}/anl_storm/storm_txt ${COMhafs}/${out_prefix}.${RUN}.storm_atm_vi
+fi
 
 #===============================================================================
 
