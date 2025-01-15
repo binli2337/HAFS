@@ -10,6 +10,7 @@
 ################################################################################
 set -x -o pipefail
 
+export USE_CFP=${USE_CFP:NO}
 export MP_LABELIO=yes
 
 CDATE=${CDATE:-${YMDH}}
@@ -379,7 +380,13 @@ if [ ${satpost} = .true. ]; then
   echo ${WGRIB2} ${sat_grb2post}                                           ${opts} -new_grid ${postgridspecs} ${sat_grb2file} >> cmdfile
 fi
 chmod +x cmdfile
-${APRUNC} ${MPISERIAL} -m cmdfile
+if [ $USE_CFP = "YES" ] ; then
+  ncmd=$(cat ./cmdfile | wc -l)
+  ncmd_max=$((ncmd < TOTAL_TASKS ? ncmd : TOTAL_TASKS))
+  $APRUNCFP -n $ncmd_max cfp ./cmdfile
+else
+  ${APRUNC} ${MPISERIAL} -m cmdfile
+fi
 export err=$?; err_chk
 # Cat the temporary files together
 cat ${grb2post}.part?? > ${grb2file}
@@ -454,7 +461,13 @@ if [ ${trkd12_combined:-no} = "yes" ] && [ $ng -eq 2 ]; then
   echo ${WGRIB2} ${trkd02_grb2file} -match '"'${PARMlistp2}'"' ${opts} -new_grid ${trakgridspecs} ${trkd02_grb2file}.hires_p2             >> cmdfile_regrid
   echo ${WGRIB2} ${trkd02_grb2file} -match '"'${PARMlistp3}'"' ${opts} -new_grid ${trakgridspecs} ${trkd02_grb2file}.hires_p3             >> cmdfile_regrid
   chmod +x cmdfile_regrid
+if [ $USE_CFP = "YES" ] ; then
+  ncmd=$(cat ./cmdfile_regrid | wc -l)
+  ncmd_max=$((ncmd < TOTAL_TASKS ? ncmd : TOTAL_TASKS))
+  $APRUNCFP -n $ncmd_max cfp ./cmdfile_regrid
+else
   ${APRUNC} ${MPISERIAL} -m cmdfile_regrid
+fi
   export err=$?; err_chk
   rm -f cmdfile_merge
  #${WGRIB2} ${trkd02_grb2file}.hires -rpn sto_1 -import_grib ${trkd01_grb2file}.hires -rpn "rcl_1:merge" -grib_out ${trkd12_grb2file}
@@ -462,7 +475,13 @@ if [ ${trkd12_combined:-no} = "yes" ] && [ $ng -eq 2 ]; then
   echo ${WGRIB2} ${trkd02_grb2file}.hires_p2 -rpn sto_1 -import_grib ${trkd01_grb2file}.hires_p2 -rpn "rcl_1:merge" -grib_out ${trkd12_grb2file}_p2 >> cmdfile_merge
   echo ${WGRIB2} ${trkd02_grb2file}.hires_p3 -rpn sto_1 -import_grib ${trkd01_grb2file}.hires_p3 -rpn "rcl_1:merge" -grib_out ${trkd12_grb2file}_p3 >> cmdfile_merge
   chmod +x cmdfile_merge
+if [ $USE_CFP = "YES" ] ; then
+  ncmd=$(cat ./cmdfile_merge | wc -l)
+  ncmd_max=$((ncmd < TOTAL_TASKS ? ncmd : TOTAL_TASKS))
+  $APRUNCFP -n $ncmd_max cfp ./cmdfile_merge
+else
   ${APRUNC} ${MPISERIAL} -m cmdfile_merge
+fi
   export err=$?; err_chk
   cat ${trkd12_grb2file}_p1 ${trkd12_grb2file}_p2 ${trkd12_grb2file}_p3 > ${trkd12_grb2file}
   mv ${trkd12_grb2file} ${trkd02_grb2file}

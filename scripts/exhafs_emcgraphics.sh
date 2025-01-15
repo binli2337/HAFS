@@ -10,6 +10,7 @@ set -xe
 
 date
 
+export USE_CFP=${USE_CFP:NO}
 YMDH=${YMDH:-2019082900}
 STORM=${STORM:-NATL}
 storm=${STORM,,}
@@ -328,7 +329,13 @@ done
 #==============================================================================
 
 chmod u+x ./$cmdfile
-${APRUNC} ${MPISERIAL} -m ./$cmdfile
+if [ $USE_CFP = "YES" ] ; then
+  ncmd=$(cat ./$cmdfile | wc -l)
+  ncmd_max=$((ncmd < TOTAL_TASKS ? ncmd : TOTAL_TASKS))
+  $APRUNCFP -n $ncmd_max cfp ./$cmdfile
+else
+  ${APRUNC} ${MPISERIAL} -m ./$cmdfile
+fi
 export err=$?; err_chk
 
 date
@@ -457,7 +464,13 @@ done
 # End loop for forecast hours
 
 chmod u+x ./$cmdfile
-${APRUNC} ${MPISERIAL} -m ./$cmdfile
+if [ $USE_CFP = "YES" ] ; then
+  ncmd=$(cat ./$cmdfile | wc -l)
+  ncmd_max=$((ncmd < TOTAL_TASKS ? ncmd : TOTAL_TASKS))
+  $APRUNCFP -n $ncmd_max cfp ./$cmdfile
+else
+  ${APRUNC} ${MPISERIAL} -m ./$cmdfile
+fi
 export err=$?; err_chk
 
 date
@@ -529,8 +542,13 @@ for((i=0;i<${nscripts};i++)); do
 done
 
 chmod u+x ./$cmdfile
-
-${APRUNC} ${MPISERIAL} -m ./$cmdfile
+if [ $USE_CFP = "YES" ] ; then
+  ncmd=$(cat ./$cmdfile | wc -l)
+  ncmd_max=$((ncmd < TOTAL_TASKS ? ncmd : TOTAL_TASKS))
+  $APRUNCFP -n $ncmd_max cfp ./$cmdfile
+else
+  ${APRUNC} ${MPISERIAL} -m ./$cmdfile
+fi
 export err=$?; err_chk
 
 IFHR=$(($IFHR + 1))
@@ -611,7 +629,13 @@ done
 done
 
 chmod u+x ./$cmdfile
-${APRUNC} ${MPISERIAL} -m ./$cmdfile
+if [ $USE_CFP = "YES" ] ; then
+  ncmd=$(cat ./$cmdfile | wc -l)
+  ncmd_max=$((ncmd < TOTAL_TASKS ? ncmd : TOTAL_TASKS))
+  $APRUNCFP -n $ncmd_max cfp ./$cmdfile
+else
+  ${APRUNC} ${MPISERIAL} -m ./$cmdfile
+fi
 export err=$?; err_chk
 
 date

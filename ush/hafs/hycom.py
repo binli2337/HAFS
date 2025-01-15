@@ -1096,13 +1096,19 @@ export gridno={gridno}\n'''.format(**self.__dict__))
 
         tt=int(os.environ['TOTAL_TASKS'])
         logger.info ('CALLING gfs2ofsinputs %d ',tt)
-        mpiserial_path=os.environ.get('MPISERIAL','*MISSING*')
-        if mpiserial_path=='*MISSING*':
-            mpiserial_path=self.getexe('mpiserial','*MISSING*')
-        if mpiserial_path=='*MISSING*':
-            mpiserial_path=produtil.fileop.find_exe('mpiserial')
-        cmd2=mpirun(mpi(mpiserial_path)['-m','command.file.preview'],allranks=True)
-        checkrun(cmd2)
+        try:
+            cfp_path=produtil.fileop.find_exe('cfp')
+            cmd2=mpirun(mpi(cfp_path)['./command.file.preview'],allranks=True)
+            checkrun(cmd2)
+        except Exception as e:
+            logger.info ('Could not find CFP, using mpiserial instead')
+            mpiserial_path=os.environ.get('MPISERIAL','*MISSING*')
+            if mpiserial_path=='*MISSING*':
+                 mpiserial_path=self.getexe('mpiserial','*MISSING*')
+            if mpiserial_path=='*MISSING*':
+                 mpiserial_path=produtil.fileop.find_exe('mpiserial')
+                 cmd2=mpirun(mpi(mpiserial_path)['-m','command.file.preview'],allranks=True)
+                 checkrun(cmd2)
 
         with open('listflx.dat','wt') as listflxf:
             listflxf.write(''.join(listflx))
@@ -1129,13 +1135,19 @@ wslocal = 0       ! if  wslocal = 1, then wind stress are computed from wind vel
             commands.append('%s %d > %s 2>&1\n'%(cmd,i,gfs2ofs_out))
         with open('command.file.preview_gfs2ofs','wt') as fid:
             fid.write(''.join(commands))
-        mpiserial_path=os.environ.get('MPISERIAL','*MISSING*')
-        if mpiserial_path=='*MISSING*':
-             mpiserial_path=self.getexe('mpiserial','*MISSING*')
-        if mpiserial_path=='*MISSING*':
-             mpiserial_path=produtil.fileop.find_exe('mpiserial')
-        cmd2=mpirun(mpi(mpiserial_path)['-m','command.file.preview_gfs2ofs'],allranks=True)
-        checkrun(cmd2)
+        try:
+            cfp_path=produtil.fileop.find_exe('cfp')
+            cmd2=mpirun(mpi(cfp_path)['./command.file.preview_gfs2ofs'],allranks=True)
+            checkrun(cmd2)
+        except Exception as e:
+            logger.info ('Could not find CFP, using mpiserial instead')
+            mpiserial_path=os.environ.get('MPISERIAL','*MISSING*')
+            if mpiserial_path=='*MISSING*':
+                 mpiserial_path=self.getexe('mpiserial','*MISSING*')
+            if mpiserial_path=='*MISSING*':
+                 mpiserial_path=produtil.fileop.find_exe('mpiserial')
+            cmd2=mpirun(mpi(mpiserial_path)['-m','command.file.preview_gfs2ofs'],allranks=True)
+            checkrun(cmd2)
         self.ofs_timeinterp_forcing(logger)
 
     def ofs_forcing_info(self,filename):

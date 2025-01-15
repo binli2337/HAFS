@@ -160,7 +160,13 @@ for ng in $(seq 1 ${ngrids}); do
         > ${DATA}/run_product.${gridstr}.log 2>&1" >> cmdfile_product
 done
 chmod +x cmdfile_product
-${APRUNC} ${MPISERIAL} -m cmdfile_product
+if [ $USE_CFP = "YES" ] ; then
+  ncmd=$(cat ./cmdfile_product | wc -l)
+  ncmd_max=$((ncmd < TOTAL_TASKS ? ncmd : TOTAL_TASKS))
+  $APRUNCFP -n $ncmd_max cfp ./cmdfile_product 
+else 
+  ${APRUNC} ${MPISERIAL} -m cmdfile_product
+fi
 export err=$?; err_chk
 
 # Check if product/tracker run successfully

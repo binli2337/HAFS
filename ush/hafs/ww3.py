@@ -633,11 +633,17 @@ class WW3Post(hafs.hafstask.HAFSTask):
                             cfpf.write('\n'.join(commands))
                         threads=os.environ['TOTAL_TASKS']
                         logger.info('ww3_outp_bull total threads: %s ',threads)
-                        mpiserial_path=os.environ.get('MPISERIAL','*MISSING*')
-                        if mpiserial_path=='*MISSING*':
-                            mpiserial_path=self.getexe('mpiserial')
-                        cmd2=mpirun(mpi(mpiserial_path)['-m',cmdfname],allranks=True)
-                        checkrun(cmd2)
+                        try:
+                            cfp_path=produtil.fileop.find_exe('cfp')
+                            cmd2=mpirun(mpi(cfp_path)[cmdfname],allranks=True)
+                            checkrun(cmd2)
+                        except Exception as e:
+                            logger.info ('Could not find CFP, using mpiserial instead')
+                            mpiserial_path=os.environ.get('MPISERIAL','*MISSING*')
+                            if mpiserial_path=='*MISSING*':
+                                mpiserial_path=self.getexe('mpiserial')
+                                cmd2=mpirun(mpi(mpiserial_path)['-m',cmdfname],allranks=True)
+                                checkrun(cmd2)
                         # Tar the outputs and diliver to com dir
                         cmd=exe('tar')['-cvf', 'ww3_bull.tar'][filebull]
                         checkrun(cmd,logger=logger)
@@ -688,11 +694,17 @@ class WW3Post(hafs.hafstask.HAFSTask):
                             cfpf.write('\n'.join(commands))
                         threads=os.environ['TOTAL_TASKS']
                         logger.info('ww3_outp_spec total threads: %s ',threads)
-                        mpiserial_path=os.environ.get('MPISERIAL','*MISSING*')
-                        if mpiserial_path=='*MISSING*':
-                            mpiserial_path=self.getexe('mpiserial')
-                        cmd2=mpirun(mpi(mpiserial_path)['-m',cmdfname],allranks=True)
-                        checkrun(cmd2)
+                        try:
+                            cfp_path=produtil.fileop.find_exe('cfp')
+                            cmd2=mpirun(mpi(cfp_path)[cmdfname],allranks=True)
+                            checkrun(cmd2)
+                        except Exception as e:
+                            logger.info ('Could not find CFP, using mpiserial instead')
+                            mpiserial_path=os.environ.get('MPISERIAL','*MISSING*')
+                            if mpiserial_path=='*MISSING*':
+                                mpiserial_path=self.getexe('mpiserial')
+                            cmd2=mpirun(mpi(mpiserial_path)['-m',cmdfname],allranks=True)
+                            checkrun(cmd2)
                         # Tar the outputs and deliver to com dir
                         cmd=exe('tar')['-cvf', 'ww3_spec.tar'][fileout]
                         checkrun(cmd,logger=logger)

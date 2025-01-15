@@ -43,6 +43,8 @@ if [ "$machine" = wcoss2 ]; then
   export APRUNF="mpiexec -n ${TOTAL_TASKS} cfp "
   export APRUNCFP="mpiexec"
   export BACKGROUND=""
+  export USE_CFP="YES"
+  export USE_MPISERIAL="NO"
 elif [ "$machine" = jet ] || [ "$machine" = hera ] || [ "$machine" = orion ] || [ "$machine" = hercules ]; then
   export APRUN="time"
   export APRUNS="srun --mem=0 --ntasks=1 --nodes=1 --ntasks-per-node=1 --cpus-per-task=1"
