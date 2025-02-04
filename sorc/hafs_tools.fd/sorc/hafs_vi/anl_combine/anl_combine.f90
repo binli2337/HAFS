@@ -2109,8 +2109,6 @@
 !     pct_m=pct_m+50.
 
       ps_rat2=psfc_obs1/(pct_m-100.)              ! - 1mb
-      if(ps_rat2.gt.10.)ps_rat2=10.0
-      if(ps_rat2.lt.(-10.))ps_rat2=-10.0
 
       print*,'ps_rat2=',ps_rat2,psfc_obs1,pct_m
 
@@ -2652,6 +2650,7 @@
       END DO
 
 !     if(pct_m.gt.psfc_obs1)beta=1.0
+      if(pct_m.gt.psfc_obs1 .and. vobs.lt.v64kt .and. vmax_s.lt.v64kt .and. abs(beta-1.0).lt.0.15) beta=1.0
 
       IF ( INITOPT > 0 )THEN
         beta=1.0
