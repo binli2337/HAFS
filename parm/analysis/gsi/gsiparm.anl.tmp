@@ -162,6 +162,8 @@ OBS_INPUT::
    gmibufr        gmi         gpm         gmi_gpm             0.0     3     0
    saphirbufr     saphir      meghat      saphir_meghat       0.0     3     0
    ahibufr        ahi         himawari8   ahi_himawari8       0.0     3     0
+   atmsbufr       atms        n21         atms_n21            0.0     1     0
+   crisfsbufr     cris-fsr    n21         cris-fsr_n21        0.0     1     0
 ::
 &SUPEROB_RADAR
   del_azimuth=5.,del_elev=.25,del_range=10000.,del_time=1.0,elev_angle_max=5.,minnum=1,range_max=200000.,
