@@ -21,6 +21,9 @@
 !             If the TCVital SLP is lower than 930 hPa, it uses shallow composite vortex
 ! Revised by: JungHoon Shin Sep 2024 NCEP/EMC
 !             Made further upgrades regarding SLP improvement (especially for WPAC) and better short range forecast
+! Revised by: JungHoon Shin, 2025 NCEP/EMC
+!             If icut1=icut2, very rare exceptional case, which could produce
+!             NaN value when compostie vortex is added, set as cut_off as 0
 ! SUBPROGRAM
 !   PRGRMMR
 !
@@ -460,6 +463,8 @@
          end if
       end do
 
+      if (icut1.gt.IR) icut1=IR   ! Added for safety
+
 !      go to 777 !* UNUSED cutoff beyond RMN2 - - - - - - - - - -
 ! shin: UNUSED part between go to 777~777 CONTINUE were commented
 !         do i=1,icut1-1
@@ -513,6 +518,7 @@
          end do
       end do
 
+      IF(icut1.lt.icut2)THEN
 !*    FADE from RMN2 to RMN2+3'
       do i=icut1,icut2 !* cut_off = 1 -> 0
          cut_off=FLOAT(icut2-i)/FLOAT(icut2-icut1)
@@ -527,6 +533,19 @@
             r(k,i)=(r(k,i)-r(k,IR))*cut_off+r(k,IR)
          end do
       end do
+      ELSE
+       write(*,*) 'icut1 and icut2 are same: rare exceptional case'
+       cut_off=0.0
+       i=icut1
+       print*,'cut_off=',cut_off
+       ps(i)=(ps(i)-ps(IR))*cut_off+ps(IR)
+       ps1(i)=(ps1(i)-ps1(IR))*cut_off+ps1(IR)
+       do k=1,kmax
+        th(k,i)=(th(k,i)-th(k,IR))*cut_off
+        t(k,i)=(t(k,i)-t(k,IR))*cut_off+t(k,IR)
+        r(k,i)=(r(k,i)-r(k,IR))*cut_off+r(k,IR)
+       end do
+      ENDIF
 
 ! END correction
 
