@@ -291,19 +291,19 @@
 ! 6.0 --- u_update_ua & ua_update_u
   if ( trim(actions) == "u_update_ua" .or. trim(actions) == "ua_update_u" ) then
      write(*,'(a)')' --- call u_ua_update//hafs_datool for '//trim(in_file)
-     call hafs_u_ua(trim(actions),trim(in_grid),trim(in_file),trim(out_file))
+     if ( my_proc_id == 0 ) call hafs_u_ua(trim(actions),trim(in_grid),trim(in_file),trim(out_file))
   endif
 
 !----------------------------------------------------------------
 ! 7.0 --- HAFS ideal_vortex
   if ( trim(actions) == "ideal_vortex" ) then
      write(*,'(a)')' --- call ideal_vortex for '//trim(in_dir)
-     call hafs_ideal_vortex(trim(in_dir), trim(infile_date), nestdoms)
+     if ( my_proc_id == 0 ) call hafs_ideal_vortex(trim(in_dir), trim(infile_date), nestdoms)
   endif
   !  --- HAFS ideal_sfc_data
   if ( trim(actions) == "change_sfc_data" ) then
      write(*,'(a)')' --- call ideal_vortex for '//trim(in_file)
-     call hafs_ideal_sfc_data(trim(in_file))
+     if ( my_proc_id == 0 ) call hafs_ideal_sfc_data(trim(in_file))
   endif
 
 !----------------------------------------------------------------

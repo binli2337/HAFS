@@ -25,12 +25,18 @@
 
   type(grid2d_info)                     :: grid
   real, allocatable, dimension(:,:)     :: cangu, sangu, cangv, sangv
-  integer  :: ix, iy, iz, ndims, k, ncid, varid, i, j, rcode
-  integer  :: yaxis_1, yaxis_2, xaxis_1, xaxis_2
+  integer  :: ix, iy, iz, ndims, k, ncid, varid, i, j, rcode, xtype, nvars, nv, dimids(5), vdim(5)
+  integer  :: yaxis_1, yaxis_2, xaxis_1, xaxis_2, zaxis_1
   integer  :: yaxis_1id, yaxis_2id, xaxis_1id, xaxis_2id, uid, vid, zaxis_1id, timeid
+  integer  :: yaxis_1iv, yaxis_2iv, xaxis_1iv, xaxis_2iv, zaxis_1iv, timeiv
   integer, dimension(nf90_max_var_dims) :: dims
   real, allocatable, dimension(:,:,:,:) :: dat41, dat42, ua, va, u, v
   real, allocatable, dimension(:,:)     :: dat21, dat22
+  real, allocatable, dimension(:)       :: dat11
+  real*8, allocatable, dimension(:,:,:,:) :: ddat4
+
+  character (len=2500)                  :: nc_file
+  character(len=nf90_max_name)          :: varname, dimname(4)
 
 !------------------------------------------------------------------------------
 ! 1 --- arg process and parameters
@@ -111,82 +117,137 @@
      enddo
      deallocate(ua, va, cangu, sangu, cangv, sangv)
 
-     !---check dimensions: xaxis_1=ix, xaxis_2=ix+1, yaxis_2=iy, yaxis_1=iy+1, zaxis_1=iz, zaxis_2=iz+1
-     xaxis_1=-99; xaxis_2=-99; yaxis_1=-99; yaxis_2=-99
-     call nccheck(nf90_open(trim(in_file), nf90_write, ncid), 'wrong in open '//trim(in_file), .true.)
+     call nccheck(nf90_open(trim(in_file), nf90_nowrite, ncid), 'wrong in open '//trim(in_file), .true.)
+     !---get ua xtype from input_file
+     xtype=nf90_real
+     call nccheck(nf90_inq_varid(ncid, "ua", varid), 'wrong in nf90_inq_varid ua id', .false.)
+     call nccheck(nf90_inquire_variable(ncid, varid, xtype=xtype), 'wrong in nf90_inquire_variable xtype', .false.)
 
-     !---change dim yaxis_1 to yaxis_2
-     rcode=nf90_inq_dimid(ncid, "yaxis_1", yaxis_1id)
-     if ( rcode == nf90_noerr ) rcode=nf90_inquire_dimension(ncid, yaxis_1id, len=yaxis_1)
-     rcode=nf90_inq_dimid(ncid, "yaxis_2", yaxis_2id)
-     if ( rcode == nf90_noerr ) rcode=nf90_inquire_dimension(ncid, yaxis_2id, len=yaxis_2)
-     rcode=nf90_redef(ncid)
-     if ( yaxis_1 == iy .and. yaxis_2 < 1 ) then
-        write(*,*)'====w1 rename dimension yaxis_1 --> yaxis_2'
-        rcode=nf90_rename_dim(ncid, yaxis_1id, "yaxis_2")
-        write(*,*)'====w1 rename dimension yaxis_1 --> yaxis_2 finished'
-        rcode=nf90_def_dim(ncid, "yaxis_1", iy+1, yaxis_1id)
+     !---update or generate a new file
+     rcode=nf90_inq_varid(ncid, 'u', varid)
+     call nccheck(nf90_close(ncid), 'wrong in close '//trim(in_file), .false.)
+     if ( rcode == nf90_noerr ) then
+        !---if u/v exist, update u/v
+        call update_hafs_restart(trim(in_file), 'u', ix, iy+1, iz, 1, u)
+        call update_hafs_restart(trim(in_file), 'v', ix+1, iy, iz, 1, v)
+        deallocate(u, v)
+
+     else  !---generate a new file
+        !---create file
+        if ( trim(out_file) == 'w' .or. len_trim(out_file) < 1 ) then
+           i=index(in_file,'.nc')-1
+           if ( i<2 ) i=len_trim(in_file)
+           nc_file=in_file(1:i)//'.ua2u.nc'
+        else
+           nc_file=trim(out_file)
+        endif
+        !--- delete nc_file if it exist
+        open(unit=1234, iostat=rcode, file=trim(nc_file), status='old')
+        if (rcode == 0) close(1234, status='delete')
+        !call nccheck(nf90_create(trim(nc_file), nf90_hdf5, ncid), 'wrong in creat '//trim(nc_file), .true.)
+        call nccheck(nf90_create(trim(nc_file), nf90_netcdf4, ncid), 'wrong in creat '//trim(nc_file), .true.)
+
+        !---define dimension
+        call nccheck(nf90_def_dim(ncid, 'xaxis_1', ix  , xaxis_1id), 'wrong in def_dim xaxis_1', .true.)
+        call nccheck(nf90_def_dim(ncid, 'xaxis_2', ix+1, xaxis_2id), 'wrong in def_dim xaxis_2', .true.)
+        call nccheck(nf90_def_dim(ncid, 'yaxis_1', iy+1, yaxis_1id), 'wrong in def_dim yaxis_1', .true.)
+        call nccheck(nf90_def_dim(ncid, 'yaxis_2', iy  , yaxis_2id), 'wrong in def_dim yaxis_2', .true.)
+        call nccheck(nf90_def_dim(ncid, 'zaxis_1', iz  , zaxis_1id), 'wrong in def_dim zaxis_1', .true.)
+        call nccheck(nf90_def_dim(ncid, 'Time',    1   , timeid   ), 'wrong in def_dim Time   ', .true.)
+
+
+        !---define variables dimensions and u/v
+        call nccheck(nf90_def_var(ncid, 'xaxis_1',  xtype, (/xaxis_1id/), xaxis_1iv), 'wrong in def_var xaxis_1', .true.)
+        !rcode=nf90_def_var(ncid, 'xaxis_1',  xtype, (/xaxis_1id/), xaxis_1iv)
+        call nccheck(nf90_def_var(ncid, 'xaxis_2',  xtype, (/xaxis_2id/), xaxis_2iv), 'wrong in def_var xaxis_2', .true.)
+        call nccheck(nf90_def_var(ncid, 'yaxis_1',  xtype, (/yaxis_1id/), yaxis_1iv), 'wrong in def_var yaxis_1', .true.)
+        call nccheck(nf90_def_var(ncid, 'yaxis_2',  xtype, (/yaxis_2id/), yaxis_2iv), 'wrong in def_var yaxis_2', .true.)
+        call nccheck(nf90_def_var(ncid, 'zaxis_1',  xtype, (/zaxis_1id/), zaxis_1iv), 'wrong in def_var zaxis_1', .true.)
+        call nccheck(nf90_def_var(ncid, 'Time',     xtype, (/timeid/),    timeiv),    'wrong in def_var Time'   , .true.)
+        call nccheck(nf90_def_var(ncid, 'u',        xtype, (/xaxis_1id,yaxis_1id,zaxis_1id,timeid/), uid), 'wrong in def_var u', .true.)
+        call nccheck(nf90_def_var(ncid, 'v',        xtype, (/xaxis_2id,yaxis_2id,zaxis_1id,timeid/), vid), 'wrong in def_var v', .true.)
+        call nccheck(nf90_enddef(ncid), 'wrong in nf90_enddef', .false.)
+
+        !---write variables dimensions and u/v
+        allocate(dat11(ix))
+        do i = 1, ix; dat11(i)=i*1.0; enddo
+        call nccheck(nf90_put_var(ncid, xaxis_1iv, dat11), 'wrong in write xaxis_1', .true.)
+        deallocate(dat11)
+
+        allocate(dat11(ix+1))
+        do i = 1, ix+1; dat11(i)=i*1.0; enddo
+        call nccheck(nf90_put_var(ncid, xaxis_2iv, dat11), 'wrong in write xaxis_2', .true.)
+        deallocate(dat11)
+
+        allocate(dat11(iy+1))
+        do i = 1, iy+1; dat11(i)=i*1.0; enddo
+        call nccheck(nf90_put_var(ncid, yaxis_1iv, dat11), 'wrong in write yaxis_1', .true.)
+        deallocate(dat11)
+
+        allocate(dat11(iy))
+        do i = 1, iy; dat11(i)=i*1.0; enddo
+        call nccheck(nf90_put_var(ncid, yaxis_2iv, dat11), 'wrong in write yaxis_2', .true.)
+        deallocate(dat11)
+
+        allocate(dat11(iz))
+        do i = 1, iz; dat11(i)=i*1.0; enddo
+        call nccheck(nf90_put_var(ncid, zaxis_1iv, dat11), 'wrong in write zaxis_1', .true.)
+        deallocate(dat11)
+
+        call nccheck(nf90_put_var(ncid, timeiv, 1.0), 'wrong in write Time', .true.)
+
+        call nccheck(nf90_put_var(ncid, uid, u), 'wrong in write u', .true.)
+        call nccheck(nf90_put_var(ncid, vid, v), 'wrong in write v', .true.)
+        deallocate(u,v)
+
+        !---copy other variables
+        call nccheck(nf90_open(trim(in_file), nf90_nowrite, ncid), 'wrong in open '//trim(in_file), .true.)
+        call nccheck(nf90_inquire(ncid, ndims, nvars), 'wrong in inquire ncid', .true.)
+        do_input_var_loop: do nv=1, nvars
+           dimids=1; vdim=1
+           call nccheck(nf90_inquire_variable(ncid,nv,varname,xtype,ndims,dimids), 'wrong in inquire_variable '//trim(varname), .false.)
+           do i = 1, ndims
+              call nccheck(nf90_inquire_dimension(ncid,dimids(i), len=vdim(i)), 'wrong in inquire '//trim(varname)//' dim', .false.)
+           enddo
+
+           !---skip xaxis_1(xaxis_1), yaxis_1(yaxis_1), zaxis_1(zaxis_1)
+           if ( ndims < 3 ) cycle do_input_var_loop
+
+           call nccheck(nf90_inq_varid(ncid, trim(varname), varid), 'wrong in inquire '//trim(varname)//' varid', .false.)
+           allocate(dat41(vdim(1),vdim(2),vdim(3),vdim(4)))
+           if ( xtype == nf90_float .or. xtype == nf90_real .or. xtype == nf90_real4 ) then
+              call nccheck(nf90_get_var(ncid, varid, dat41), 'wrong in get '//trim(varname), .true.)
+           else if ( xtype == nf90_double .or. xtype == nf90_real8 ) then
+              allocate(ddat4(vdim(1),vdim(2),vdim(3),vdim(4)))
+              call nccheck(nf90_get_var(ncid, varid, ddat4), 'wrong in get '//trim(varname), .true.)
+              dat41=real(ddat4)
+              deallocate(ddat4)
+           else
+              write(*,*)' !!!! please add ',xtype,' xtype data here '
+              stop
+           endif
+
+           !---write out
+           dimname(1)='xaxis_1'
+           dimname(2)='yaxis_2'
+           if ( vdim(1) == ix+1 ) dimname(1)='xaxis_2'
+           if ( vdim(2) == iy+1 ) dimname(2)='yaxis_1'
+           if ( ndims == 3 ) then   !
+              dimname(3)='Time'
+              dimname(4)='-'
+              write(*,'(a)')' --- writing '//trim(varname)//'('//trim(dimname(1))//','//trim(dimname(2))//','//trim(dimname(3))//')'
+              call write_nc_real(trim(nc_file), trim(varname), vdim(1),vdim(2),vdim(3), -1, trim(dimname(1)), trim(dimname(2)), trim(dimname(3)), trim(dimname(4)), dat41, '-', '-')
+           else if ( ndims == 4 ) then   !
+              dimname(3)='zaxis_1'
+              dimname(4)='Time'
+              write(*,'(a)')' --- writing '//trim(varname)//'('//trim(dimname(1))//','//trim(dimname(2))//','//trim(dimname(3))//','//trim(dimname(4))//')'
+              call write_nc_real(trim(nc_file), trim(varname), vdim(1),vdim(2),vdim(3),vdim(4),trim(dimname(1)), trim(dimname(2)), trim(dimname(3)), trim(dimname(4)), dat41, '-', '-')
+           endif
+           deallocate(dat41)
+
+        enddo do_input_var_loop
+
      endif
-
-     rcode=nf90_inq_dimid(ncid, "xaxis_2", xaxis_2id)
-     if ( rcode /= nf90_noerr ) rcode=nf90_def_dim(ncid, "xaxis_2", ix+1, xaxis_2id)
-
-     !---def u/v var
-     !rcode=nf90_inq_dimid(ncid, "xaxis_1", xaxis_1id)
-     !rcode=nf90_inq_dimid(ncid, "yaxis_1", yaxis_1id)
-     !rcode=nf90_inq_dimid(ncid, "yaxis_2", yaxis_2id)
-     !rcode=nf90_inq_dimid(ncid, "zaxis_1", zaxis_1id)
-     !rcode=nf90_inq_dimid(ncid, "Time", timeid)
-     !rcode=nf90_def_var(ncid, 'u', nf90_double, (/xaxis_1id,yaxis_1id,zaxis_1id,timeid/), uid)
-     !rcode=nf90_def_var(ncid, 'v', nf90_double, (/xaxis_2id,yaxis_2id,zaxis_1id,timeid/), vid)
-     rcode=nf90_enddef(ncid)
-
-     !---output u/v
-     !rcode=nf90_put_var(ncid, uid, dble(u))
-     !rcode=nf90_put_var(ncid, vid, dble(v))
-     rcode=nf90_close(ncid)
-
-     !      rcode=nf90_inq_dimid(ncid, "yaxis_1", yaxis_1id)
-     !      rcode=nf90_rename_dim(ncid, yaxis_1id, "yaxis_2")
-           !rcode=nf90_inq_varid(ncid, 'yaxis_1', varid)
-           !rcode=nf90_rename_var(ncid, varid, "yaxis_2")
-           !rcode=nf90_rename_att(ncid, varid, "long_name", "yaxis_2")
-     !   endif
-     !   call nccheck(nf90_enddef(ncid), 'wrong in nf90_enddef '//trim(in_file), .true.)
-     !endif
-     !call nccheck(nf90_close(ncid), 'wrong in close '//trim(in_file), .true.)
-
-     !call nccheck(nf90_open(trim(in_file), nf90_write, ncid), 'wrong in open '//trim(in_file), .true.)
-     !rcode=nf90_inq_varid(ncid, 'yaxis_1', varid)
-     !rcode=nf90_rename_var(ncid, varid, "yaxis_2")
-     !rcode=nf90_rename_att(ncid, varid, "long_name", "yaxis_2")
-     !call nccheck(nf90_close(ncid), 'wrong in close '//trim(in_file), .true.)
-
-     !call nccheck(nf90_inq_dimid(ncid, "xaxis_1", xaxis_1id), 'wrong in nf90_inq_dimid xaxis_1', .false.)
-     !if ( xaxis_1id > 0 ) call nccheck(nf90_inquire_dimension(ncid, xaxis_1id, len=xaxis_1), 'wrong in nf90_inquire_dimension xaxis_1', .false.)
-     !call nccheck(nf90_inq_dimid(ncid, "xaxis_2", xaxis_2id), 'wrong in nf90_inq_dimid xaxis_2', .false.)
-     !if ( xaxis_2id > 0 ) call nccheck(nf90_inquire_dimension(ncid, xaxis_2id, len=xaxis_2), 'wrong in nf90_inquire_dimension xaxis_2', .false.)
-     !if ( xaxis_1/=ix .or. xaxis_2/=ix+1 .or. yaxis_2/=iy .or. yaxis_1/=iy+1 ) then
-     !      write(*,*)'====w5', iy, yaxis_1, yaxis_2
-     !      call nccheck(nf90_def_dim(ncid, "yaxis_1", iy+1, i), 'wrong in nf90_def_dim yaxis_1', .true.)
-     !      write(*,*)'====w3 redef dim yaxis_1'
-     !   endif
-     !   !write(*,*)'====w6', ix, xaxis_1, xaxis_2
-     !   !if ( xaxis_2 < 1 ) then
-     !   !   call nccheck(nf90_def_dim(ncid, "xaxis_2", ix+1, xaxis_2id), 'wrong in nf90_inq_dimid xaxis_2', .true.)
-     !   !   write(*,*)'====w4 def dim xaxis_2'
-     !   !endif
-     !   call nccheck(nf90_enddef(ncid), 'wrong in nf90_enddef '//trim(in_file), .true.)
-     !endif
-     !call nccheck(nf90_close(ncid), 'wrong in close '//trim(in_file), .true.)
-     !write(*,*)'====w1 finished redef'
-
-     !---update in_file
-     !call update_hafs_restart(trim(in_file), 'u', ix, iy+1, iz, 1, u)
-     !call update_hafs_restart(trim(in_file), 'v', ix+1, iy, iz, 1, v)
-     !call write_nc_real(trim(in_file),'u', ix, iy+1, iz, 1, 'xaxis_1', 'yaxis_1', 'zaxis_1', 'Time', u, 'm-1s', 'u')
-     !call write_nc_real(trim(in_file),'v', ix+1, iy, iz, 1, 'xaxis_2', 'yaxis_2', 'zaxis_1', 'Time', v, 'm-1s', 'v')
-     deallocate(u, v)
 
   endif
 

@@ -864,16 +864,16 @@
      if ( i == int(ixo/2) .and.j == int(jxo/2) .and. k==1 .and. n==1 ) then
         if (debug_level>20) write(*,'(a,   5i10)')'--combine_grids_for_remap: ',i,j, gw(i,j)%src_points, gw(i,j)%dst_points, ncount
         if (debug_level>20) write(*,'(a,  90i10)')'--             src_points: ', ((gw(i,j)%src_x(n1), gw(i,j)%src_y(n1)),n1=1,gw(i,j)%src_points)
-        if (debug_level>20) write(*,'(a,90f)')    '--             src_weight: ', ((gw(i,j)%src_weight(n1)),n1=1,gw(i,j)%src_points)
-        write(*,'(a,90es12.4)')    '--             src_values: ', ( fdat_src(gw(i,j)%src_x(n1),gw(i,j)%src_y(n1),k,n),n1=1,gw(i,j)%src_points)
+        if (debug_level>20) write(*,'(a,90e)')    '--             src_weight: ', ((gw(i,j)%src_weight(n1)),n1=1,gw(i,j)%src_points)
+        write(*,'(a,90e)')    '--             src_values: ', ( fdat_src(gw(i,j)%src_x(n1),gw(i,j)%src_y(n1),k,n),n1=1,gw(i,j)%src_points)
         if ( gw(i,j)%dst_points > 0 ) then
            if (debug_level>20) write(*,'(a,  90i13)')'--             dst_points: ', ((gw(i,j)%dst_x(n1), gw(i,j)%dst_y(n1)),n1=1,gw(i,j)%dst_points)
-           if (debug_level>20) write(*,'(a,90f)')'--             dst_weight: ', ((gw(i,j)%dst_weight(n1)),n1=1,gw(i,j)%dst_points)
-           write(*,'(a,90es12.4)')    '--             dst_values: ', ( fdat_dst(gw(i,j)%dst_x(n1),gw(i,j)%dst_y(n1),k,n),n1=1,gw(i,j)%dst_points)
+           if (debug_level>20) write(*,'(a,90e)')'--             dst_weight: ', ((gw(i,j)%dst_weight(n1)),n1=1,gw(i,j)%dst_points)
+           write(*,'(a,90e)')    '--             dst_values: ', ( fdat_dst(gw(i,j)%dst_x(n1),gw(i,j)%dst_y(n1),k,n),n1=1,gw(i,j)%dst_points)
         else
            write(*,'(a)')     '--             no dst point'
         endif
-        write(*,'(a,es12.4)')    '--          remaped value: ', fdat_out(i,j,k,n)
+        write(*,'(a,e)')    '--          remaped value: ', fdat_out(i,j,k,n)
      endif
 
   enddo; enddo; enddo; enddo

@@ -35,7 +35,7 @@
   type(grid2d_info)  :: grid
   type(llxy_cons)    :: gt
   integer            :: tc_grid_x, tc_grid_y
-  logical            :: outside
+  !logical            :: outside
 
   real               :: earth_dist
   integer            :: io_proc, kxdimwrite, i, j, k, n, m(1), fwd_radius, n1, nm, nv
@@ -91,15 +91,15 @@
      n = m(1)
      tc_grid_x=iindex(n)
      tc_grid_y=jindex(n)
-     write(*,*)' nearest dot: ', iindex(n), jindex(n), grid%grid_lont(jindex(n),iindex(n)), &
-                grid%grid_latt(jindex(n),iindex(n))
+     !write(*,*)' nearest dot: ', iindex(n), jindex(n), grid%grid_lont(jindex(n),iindex(n)), &
+     !           grid%grid_latt(jindex(n),iindex(n))
 
-     write(*,*)' tc position: ', tc%lon, tc%lat, tc_grid_x, tc_grid_y, outside
-     if ( outside ) then
-        write(*,*)' !!!! warning: tc center is located outside of the domain, please check'
-        tc_grid_x = int(grid%grid_xt/2)
-        tc_grid_y = int(grid%grid_yt/2)
-     endif
+     write(*,*)' tc position: ', tc%lon, tc%lat, tc_grid_x, tc_grid_y
+     !if ( outside ) then
+     !   write(*,*)' !!!! warning: tc center is located outside of the domain, please check'
+     !   tc_grid_x = int(grid%grid_xt/2)
+     !   tc_grid_y = int(grid%grid_yt/2)
+     !endif
 
      ! ---- re-size fwd_radius
      fwd_radius=min(fwd_radius, tc_grid_x-1, grid%grid_xt-tc_grid_x, tc_grid_y-1, grid%grid_yt-tc_grid_y)
@@ -143,7 +143,7 @@
 
 
      nvarindex=-99
-     if ( trim(vars) == 'all' .or. trim(vars) == 'ALL' .or. len_trim(vars) < 1 ) nvarindex=1
+     if ( trim(vars) == 'all' .or. trim(vars) == 'ALL' .or. len_trim(vars) <1 ) nvarindex=1
      if ( nvarindex<1 ) nvarindex=index(':'//trim(vars)//':', ':'//trim(varname)//':')
      if ( nvarindex<1 ) nvarindex=index(','//trim(vars)//',', ','//trim(varname)//',')
      if ( nvarindex<1 ) cycle do_input_var_loop
