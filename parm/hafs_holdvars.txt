@@ -281,6 +281,7 @@ export lgfdlmprad={lgfdlmprad}
 export lsm={lsm}
 export ialb={ialb}
 export iems={iems}
+export use_lpt={use_lpt}
 export fhswr={fhswr}
 export fhlwr={fhlwr}
 export iaer={iaer}
