@@ -1353,8 +1353,8 @@ if [ ${run_ocean} = yes ] && [ ${ocean_model} = mom6 ]; then
 
   # MOM_input
   ${NCP} ${PARMmom6}/hafs_mom6.input.IN ./hafs_mom6.input.IN
-  NIGLOBAL=$(ncks --trd -m INPUT/ocean_ts_ic.nc | grep -E -i ": lonh, size =" | cut -f 7 -d ' ' | uniq)
-  NJGLOBAL=$(ncks --trd -m INPUT/ocean_ts_ic.nc | grep -E -i ": lath, size =" | cut -f 7 -d ' ' | uniq)
+  niglobal=$(ncks --trd -m INPUT/ocean_ts_ic.nc | grep -E -i ": lonh, size =" | cut -f 7 -d ' ' | uniq)
+  njglobal=$(ncks --trd -m INPUT/ocean_ts_ic.nc | grep -E -i ": lath, size =" | cut -f 7 -d ' ' | uniq)
   atparse < ./hafs_mom6.input.IN > ./MOM_input
 
 fi # if [ ${run_ocean} = yes ] && [ ${ocean_model} = mom6 ]; then

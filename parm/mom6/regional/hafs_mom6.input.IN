@@ -14,10 +14,10 @@ REENTRANT_X = False             !   [Boolean] default = True
 !SYMMETRIC_MEMORY_ = True
 !STATIC_MEMORY_ = False
 
-NIGLOBAL = @[NIGLOBAL]          !
+NIGLOBAL = @[niglobal]          !
                                 ! The total number of thickness grid points in the x-direction in the physical
                                 ! domain. With STATIC_MEMORY_ this is set in MOM_memory.h at compile time.
-NJGLOBAL = @[NJGLOBAL]          !
+NJGLOBAL = @[njglobal]          !
                                 ! The total number of thickness grid points in the y-direction in the physical
                                 ! domain. With STATIC_MEMORY_ this is set in MOM_memory.h at compile time.
 !NIHALO = 4                      ! default = 4
@@ -813,7 +813,7 @@ ML_OMEGA_FRAC = 0.001           !   [nondim] default = 0.0
 TKE_DECAY = 0.001                !   [nondim] default = 2.5
                                 ! TKE_DECAY relates the vertical rate of decay of the TKE available for
                                 ! mechanical entrainment to the natural Ekman depth.
-EPBL_MSTAR_SCHEME = "OM4"       ! default = "CONSTANT"
+EPBL_MSTAR_SCHEME = "@[epbl_mstar_scheme]"       ! default = "CONSTANT"
                                 ! EPBL_MSTAR_SCHEME selects the method for setting mstar.  Valid values are:
                                 !    CONSTANT   - Use a fixed mstar given by MSTAR
                                 !    OM4        - Use L_Ekman/L_Obukhov in the sabilizing limit, as in OM4
