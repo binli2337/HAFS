@@ -9,7 +9,7 @@ cwd=$(pwd)
 
 HOMEhafs=$(pwd)/..
 FIXhafs=${HOMEhafs}/fix
-FIXversion=20240703
+FIXversion=20250205
 mkdir -p ${FIXhafs}
 cd ${FIXhafs}
 mkdir -p fix_fv3
