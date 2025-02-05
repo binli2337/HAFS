@@ -834,7 +834,7 @@ NSTAR = 0.06                    !   [nondim] default = 0.2
 MSTAR_CONV_ADJ = 0.667          !   [nondim] default = 0.0
                                 ! Coefficient used for reducing mstar during convection due to reduction of
                                 ! stable density gradient.
-USE_MLD_ITERATION = True        !   [Boolean] default = False
+USE_MLD_ITERATION = True        !   [Boolean] default = True
                                 ! A logical that specifies whether or not to use the distance to the bottom of
                                 ! the actively turbulent boundary layer to help set the EPBL length scale.
 EPBL_TRANSITION_SCALE = 0.01    !   [nondim] default = 0.1
