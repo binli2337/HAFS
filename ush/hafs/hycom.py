@@ -1107,8 +1107,8 @@ export gridno={gridno}\n'''.format(**self.__dict__))
                  mpiserial_path=self.getexe('mpiserial','*MISSING*')
             if mpiserial_path=='*MISSING*':
                  mpiserial_path=produtil.fileop.find_exe('mpiserial')
-                 cmd2=mpirun(mpi(mpiserial_path)['-m','command.file.preview'],allranks=True)
-                 checkrun(cmd2)
+            cmd2=mpirun(mpi(mpiserial_path)['-m','command.file.preview'],allranks=True)
+            checkrun(cmd2)
 
         with open('listflx.dat','wt') as listflxf:
             listflxf.write(''.join(listflx))

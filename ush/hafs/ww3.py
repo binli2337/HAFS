@@ -642,8 +642,8 @@ class WW3Post(hafs.hafstask.HAFSTask):
                             mpiserial_path=os.environ.get('MPISERIAL','*MISSING*')
                             if mpiserial_path=='*MISSING*':
                                 mpiserial_path=self.getexe('mpiserial')
-                                cmd2=mpirun(mpi(mpiserial_path)['-m',cmdfname],allranks=True)
-                                checkrun(cmd2)
+                            cmd2=mpirun(mpi(mpiserial_path)['-m',cmdfname],allranks=True)
+                            checkrun(cmd2)
                         # Tar the outputs and diliver to com dir
                         cmd=exe('tar')['-cvf', 'ww3_bull.tar'][filebull]
                         checkrun(cmd,logger=logger)
