@@ -63,6 +63,7 @@ OCN_attributes::
   skip_first_import = .false.
   use_mommesh = true
   eps_imesh = 2.5e-1
+  set_missing_stks_to_zero = true
   mesh_ocn = INPUT/mom6_mesh.nc
 ::
 
