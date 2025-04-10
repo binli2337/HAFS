@@ -123,7 +123,6 @@ rocoto_ver=os.getenv("rocoto_ver") or "1.3.7_fix"
 load(pathJoin("rocoto", rocoto_ver))
 
 prepend_path("MODULEPATH", "/sw/rdtn/modulefiles")
-load("hsi")
 
 setenv("CC", "cc")
 setenv("CXX", "CC")
