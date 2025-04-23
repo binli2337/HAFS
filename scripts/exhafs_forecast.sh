@@ -333,6 +333,10 @@ wave_model=${wave_model:-ww3}
 cpl_atm_ocn=${cpl_atm_ocn:-cmeps_2way}
 cpl_atm_wav=${cpl_atm_wav:-cmeps_1way_1to2}
 cpl_wav_ocn=${cpl_wav_ocn:-cmeps_sidebyside}
+use_waves=False
+if [ ${cpl_wav_ocn} = cmeps_2way ]; then
+  use_waves=True
+fi
 ocn_tasks=${ocn_tasks:-120}
 wav_tasks=${wav_tasks:-120}
 med_tasks=${med_tasks:-${ocn_tasks}}

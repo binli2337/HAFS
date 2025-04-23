@@ -2,19 +2,16 @@ help([[
 loads HAFS prerequisites on GAEA C6
 ]])
 
-prepend_path("MODULEPATH", "/autofs/ncrc-svm1_proj/epic/spack-stack/spack-stack-1.6.0/envs/unified-env-c6/install/modulefiles/Core")
-
-PrgEnv_intel_ver=os.getenv("PrgEnv_intel_ver") or "8.5.0"
-load(pathJoin("PrgEnv-intel", PrgEnv_intel_ver))
+prepend_path("MODULEPATH", "/ncrc/proj/epic/spack-stack/c6/spack-stack-1.6.0/envs/fms-2024.01/install/modulefiles/Core")
 
 stack_intel_ver=os.getenv("stack_intel_ver") or "2023.2.0"
 load(pathJoin("stack-intel", stack_intel_ver))
 
-stack_mpich_ver=os.getenv("stack_mpich_ver") or "8.1.29"
-load(pathJoin("stack-cray-mpich", stack_mpich_ver))
+stack_cray_mpich_ver=os.getenv("stack_cray_mpich_ver") or "8.1.29"
+load(pathJoin("stack-cray-mpich", stack_cray_mpich_ver))
 
-craype_ver=os.getenv("craype_ver") or "2.7.30"
-load(pathJoin("craype", craype_ver))
+stack_python_ver=os.getenv("stack_python_ver") or "3.10.13"
+load(pathJoin("stack-python", stack_python_ver))
 
 cmake_ver=os.getenv("cmake_ver") or "3.23.1"
 load(pathJoin("cmake", cmake_ver))
@@ -46,19 +43,19 @@ load(pathJoin("netcdf-fortran", netcdf_fortran_ver))
 parallelio_ver=os.getenv("parallelio_ver") or "2.5.10"
 load(pathJoin("parallelio", parallelio_ver))
 
-fms_ver=os.getenv("fms_ver") or "2023.04"
+fms_ver=os.getenv("fms_ver") or "2024.01"
 load(pathJoin("fms", fms_ver))
 
 bacio_ver=os.getenv("bacio_ver") or "2.4.1"
 load(pathJoin("bacio", bacio_ver))
 
-crtm_ver=os.getenv("crtm_ver") or "2.4.0.1"
+crtm_ver=os.getenv("crtm_ver") or "2.4.0"
 load(pathJoin("crtm", crtm_ver))
 
-g2_ver=os.getenv("g2_ver") or "3.4.5"
+g2_ver=os.getenv("g2_ver") or "3.5.1"
 load(pathJoin("g2", g2_ver))
 
-g2tmpl_ver=os.getenv("g2tmpl_ver") or "1.10.2"
+g2tmpl_ver=os.getenv("g2tmpl_ver") or "1.13.0"
 load(pathJoin("g2tmpl", g2tmpl_ver))
 
 bufr_ver=os.getenv("bufr_ver") or "12.0.1"
@@ -99,12 +96,6 @@ load(pathJoin("gsl", gsl_ver))
 
 nco_ver=os.getenv("nco_ver") or "5.0.6"
 load(pathJoin("nco", nco_ver))
-
-cdo_ver=os.getenv("cdo_ver") or "2.2.0"
-load(pathJoin("cdo", cdo_ver))
-
-ncio_ver=os.getenv("ncio_ver") or "1.1.2"
-load(pathJoin("ncio", ncio_ver))
 
 xarray_ver=os.getenv("xarray_ver") or "2023.7.0"
 load(pathJoin("py-xarray",xarray_ver))
