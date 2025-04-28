@@ -181,7 +181,8 @@
   rlmx           = @[rlmx_nml]
   elmx           = @[elmx_nml]
   sfc_rlm        = @[sfc_rlm_nml]
-  !tc_pbl         = 0
+  tc_pbl         = 0
+  lsoil          = 4
   random_clds    = .false.
   trans_trac     = .true.
   cnvcld         = .true.

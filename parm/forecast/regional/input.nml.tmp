@@ -183,8 +183,8 @@
   betascu        = @[betascu]
   betamcu        = @[betamcu]
   betadcu        = @[betadcu]
-  !tc_pbl         = 0
-  !use_lpt        = 0
+  tc_pbl         = 0
+  lsoil          = 4
   ialb           = @[ialb]
   iems           = @[iems]
   iaer           = @[iaer]
