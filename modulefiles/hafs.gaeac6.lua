@@ -97,6 +97,12 @@ load(pathJoin("gsl", gsl_ver))
 nco_ver=os.getenv("nco_ver") or "5.0.6"
 load(pathJoin("nco", nco_ver))
 
+Core_ver=os.getenv("Core_ver") or "24.11"
+load(pathJoin("Core", core_ver))
+
+cdo_ver=os.getenv("cdo_ver") or "2.3.0-omp"
+load(pathJoin("cdo", cdo_ver))
+
 xarray_ver=os.getenv("xarray_ver") or "2023.7.0"
 load(pathJoin("py-xarray",xarray_ver))
 
