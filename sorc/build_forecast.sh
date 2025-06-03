@@ -9,7 +9,10 @@ BUILD_MODE=${BUILD_MODE:-Release}
 cwd=$(pwd)
 
 cp hafs_forecast.fd/FV3/ccpp/suites_not_used/suite_FV3_HAFS_v1* hafs_forecast.fd/FV3/ccpp/suites/
-cd hafs_forecast.fd/tests
+cd hafs_forecast.fd/WW3/model/bin
+mv switch_meshcap switch_meshcap_tmp
+sed -e "s/ BIN2NC / /g" switch_meshcap_tmp > switch_meshcap
+cd ../../../tests
 
 if [ "${BUILD_MODE}" = Release ]; then
    debug=OFF
