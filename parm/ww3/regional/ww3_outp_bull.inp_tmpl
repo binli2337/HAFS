@@ -1,6 +1,6 @@
 $ WAVEWATCH III Point output post-processing
 $ ------------------------------------------
-<u:PNT_BEG>  <i:PNT_DT>  999
+<u:PNT_BEG>  <i:PNT_DT>  3 0
 $
 <u:PNT_NUM>
  -1
